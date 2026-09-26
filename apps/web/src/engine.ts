@@ -38,7 +38,7 @@ export function simulate(params: Engine.Params): SimResult {
     const res = fn(params);
     const summary = res.summary ?? (typeof engineModule['summarize'] === 'function' ? (engineModule['summarize'] as any)(res) : Engine.summarize(res));
     const eventsAll = res.eventsAll ?? res.events ?? [];
-    const hist = res.hist.map((r: Engine.YearRecord) => r.LE > 500 ? { ...r, LE: 500 } : r);
+    const hist = res.hist;
     return {
       params: res.params ?? params,
       hist,
@@ -49,7 +49,7 @@ export function simulate(params: Engine.Params): SimResult {
       fullYear: res.fullYear ?? null,
       year: res.year ?? (hist.length > 0 ? hist[hist.length - 1].y : 2026),
       done: res.done ?? true,
-      summary: { ...summary, lifeExpectancy: Math.min(500, summary.lifeExpectancy) },
+      summary,
     };
   }
 
@@ -66,7 +66,7 @@ export function simulate(params: Engine.Params): SimResult {
     }
   }
 
-  const hist = state.hist.map(r => r.LE > 500 ? { ...r, LE: 500 } : r);
+  const hist = state.hist;
   const rawSummary = Engine.summarize(state);
 
   return {
@@ -79,7 +79,7 @@ export function simulate(params: Engine.Params): SimResult {
     fullYear: state.fullYear,
     year: state.year,
     done: state.done,
-    summary: { ...rawSummary, lifeExpectancy: Math.min(500, rawSummary.lifeExpectancy) },
+    summary: rawSummary,
   };
 }
 
