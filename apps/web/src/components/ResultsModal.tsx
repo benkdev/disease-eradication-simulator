@@ -51,10 +51,11 @@ export function ResultsModal({ summary, scenarioLabel, onClose, onKeepGoing, onN
   ];
 
   return (
-    <div className="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="results-title">
+    <div className="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="results-title" data-testid="results-modal">
       <div className="modal-card">
         <button
           className="close-btn"
+          data-testid="results-close-btn"
           onClick={onClose}
           aria-label="Close results"
           style={{ position: 'absolute', top: 12, left: 12 }}
@@ -63,15 +64,18 @@ export function ResultsModal({ summary, scenarioLabel, onClose, onKeepGoing, onN
         </button>
 
         <div style={{ paddingTop: 32 }}>
-          <h2 id="results-title" style={{ fontSize: '1.5rem', fontWeight: 700 }}>{title}</h2>
-          <div style={{
-            fontSize: '3.2rem',
-            fontWeight: 800,
-            color: 'var(--good)',
-            lineHeight: 1,
-            margin: '8px 0',
-            fontVariantNumeric: 'tabular-nums',
-          }}>
+          <h2 id="results-title" data-testid="results-title" style={{ fontSize: '1.5rem', fontWeight: 700 }}>{title}</h2>
+          <div
+            data-testid="results-end-year"
+            style={{
+              fontSize: '3.2rem',
+              fontWeight: 800,
+              color: 'var(--good)',
+              lineHeight: 1,
+              margin: '8px 0',
+              fontVariantNumeric: 'tabular-nums',
+            }}
+          >
             {endYear}
           </div>
           <p style={{ color: 'var(--muted)', fontSize: '0.85rem', marginBottom: 16 }}>
@@ -97,11 +101,22 @@ export function ResultsModal({ summary, scenarioLabel, onClose, onKeepGoing, onN
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {summary.outcome === 'crossover' && (
-              <button className="primary" onClick={onKeepGoing} ref={primaryRef} style={{ width: '100%' }}>
+              <button
+                className="primary"
+                data-testid="keep-going-btn"
+                onClick={onKeepGoing}
+                ref={primaryRef}
+                style={{ width: '100%' }}
+              >
                 Keep going to full eradication
               </button>
             )}
-            <button onClick={onNewRun} ref={summary.outcome !== 'crossover' ? primaryRef : undefined} style={{ width: '100%' }}>
+            <button
+              data-testid="results-new-run-btn"
+              onClick={onNewRun}
+              ref={summary.outcome !== 'crossover' ? primaryRef : undefined}
+              style={{ width: '100%' }}
+            >
               New run
             </button>
           </div>

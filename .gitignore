@@ -1,4 +1,4 @@
-﻿# Dependencies
+# Dependencies
 node_modules/
 .pnpm-store/
 
@@ -8,6 +8,8 @@ build/
 out/
 .turbo/
 *.tsbuildinfo
+test-results/
+playwright-report/
 
 # Environment variables & secrets
 .env
