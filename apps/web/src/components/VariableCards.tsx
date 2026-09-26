@@ -52,6 +52,7 @@ export function VariableCards({ rec, cursorActive, enabled: propEnabled, onToggl
   return (
     <div
       className="variable-cards"
+      data-testid="variable-cards"
       style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(2, 1fr)',
@@ -70,6 +71,7 @@ export function VariableCards({ rec, cursorActive, enabled: propEnabled, onToggl
             aria-pressed={on}
             onClick={() => toggle(i)}
             data-var-idx={i}
+            data-testid={`var-card-${def.key}`}
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -96,7 +98,11 @@ export function VariableCards({ rec, cursorActive, enabled: propEnabled, onToggl
               <span style={{ fontSize: '0.74rem', color: 'var(--muted)', display: 'block' }}>
                 {def.name}
               </span>
-              <span className="tabular" style={{ fontSize: '0.92rem', fontWeight: 700, display: 'block' }}>
+              <span
+                className="tabular"
+                data-testid={`var-value-${def.key}`}
+                style={{ fontSize: '0.92rem', fontWeight: 700, display: 'block' }}
+              >
                 {rec ? def.format(value) : '—'}
               </span>
             </span>

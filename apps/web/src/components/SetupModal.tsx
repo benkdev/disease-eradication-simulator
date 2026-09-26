@@ -15,7 +15,7 @@ export function SetupModal({ getParams, onStart }: SetupModalProps) {
   };
 
   return (
-    <div className="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="setup-title">
+    <div className="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="setup-title" data-testid="setup-modal">
       <div className="modal-card">
         <h2 id="setup-title" style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: 8 }}>
           How does AI grow?
@@ -33,6 +33,7 @@ export function SetupModal({ getParams, onStart }: SetupModalProps) {
                 key={key}
                 role="radio"
                 aria-checked={isSelected}
+                data-testid={`growth-preset-${key}`}
                 onClick={() => setSelected(key)}
                 style={{
                   textAlign: 'left',
@@ -56,6 +57,7 @@ export function SetupModal({ getParams, onStart }: SetupModalProps) {
         <div style={{ position: 'sticky', bottom: 0, paddingTop: 8 }}>
           <button
             className="primary"
+            data-testid="start-run-btn"
             onClick={handleStart}
             style={{ width: '100%', fontWeight: 700, fontSize: '0.95rem' }}
             autoFocus

@@ -52,8 +52,8 @@ export function SettingsPanel({ getParams }: SettingsPanelProps) {
   }, [params]);
 
   return (
-    <details style={{ marginBottom: 8 }}>
-      <summary>Settings</summary>
+    <details data-testid="settings-panel" style={{ marginBottom: 8 }}>
+      <summary data-testid="settings-summary">Settings</summary>
       <div>
         {GROUPS.map(group => {
           const keys = Object.keys(PARAM_RANGES).filter(k => PARAM_RANGES[k].group === group);

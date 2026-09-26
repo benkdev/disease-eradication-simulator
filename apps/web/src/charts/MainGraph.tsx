@@ -317,12 +317,14 @@ export function MainGraph({
     <div
       ref={containerRef}
       className="chart-panel"
+      data-testid="main-graph-container"
       style={{ height: 300, marginBottom: 4, touchAction: 'pan-y', overflow: 'hidden' }}
     >
       <canvas
         ref={canvasRef}
         role="img"
         aria-label="Main simulation graph showing enabled variables over time"
+        data-testid="main-graph-canvas"
         style={{ width: '100%', height: '100%', display: 'block' }}
         onPointerMove={handlePointer}
         onPointerDown={handlePointer}

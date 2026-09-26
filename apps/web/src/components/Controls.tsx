@@ -15,21 +15,22 @@ export function Controls({
   onTogglePlay, onStepOnce, onNewRun, onSetSpeed,
 }: ControlsProps) {
   return (
-    <div style={{ marginBottom: 16 }}>
+    <div data-testid="controls-panel" style={{ marginBottom: 16 }}>
       {/* Action buttons */}
       <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
         <button
           className="primary"
+          data-testid="play-pause-btn"
           onClick={onTogglePlay}
           disabled={done}
           style={{ minWidth: 92 }}
         >
           {playing ? 'Pause' : 'Play'}
         </button>
-        <button onClick={onStepOnce} disabled={done}>
+        <button data-testid="step-once-btn" onClick={onStepOnce} disabled={done}>
           +1 year
         </button>
-        <button onClick={onNewRun}>
+        <button data-testid="new-run-btn" onClick={onNewRun}>
           New run
         </button>
       </div>
@@ -51,6 +52,7 @@ export function Controls({
             <button
               key={s}
               aria-pressed={speed === s}
+              data-testid={`speed-btn-${s}`}
               onClick={() => onSetSpeed(s)}
               style={{
                 minWidth: 36,
