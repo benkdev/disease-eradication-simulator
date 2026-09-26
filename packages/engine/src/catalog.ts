@@ -14,6 +14,43 @@ export const END_YEAR = 2300;
 export const MAX_EVENTS = 60;
 export const TOTAL_FAMILIES = 24;
 
+// ── Gompertz-Makeham constants ───────────────────────────────────────────────
+
+export const A_EXT = 0.0006;
+export const A_DIS = 0.004;
+export const G0 = 0.085;
+export const B_INT = 1.9112359e-5;
+export const D_AGE = 0.2781289;
+
+// ── Gompertz-Makeham helpers ─────────────────────────────────────────────────
+
+export function lifeExp(A: number, B: number, G: number): number {
+  let s = 0;
+  let cum = 0;
+  let S = 1;
+  for (let a = 0; a <= 49999; a++) {
+    s += S;
+    cum += A + B * Math.exp(Math.min(700, G * (a + 0.5)));
+    S = Math.exp(-cum);
+    if (S < 1e-7) break;
+  }
+  return s;
+}
+
+export function solveGmin(target: number): number {
+  let lo = 1e-7;
+  let hi = G0;
+  for (let i = 0; i < 80; i++) {
+    const m = Math.sqrt(lo * hi);
+    if (lifeExp(A_EXT, B_INT, m) > target) {
+      lo = m;
+    } else {
+      hi = m;
+    }
+  }
+  return Math.sqrt(lo * hi);
+}
+
 // ── Type metadata ────────────────────────────────────────────────────────────
 
 export interface TypeInfo {

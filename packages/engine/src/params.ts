@@ -35,6 +35,8 @@ export interface Params {
   aging: number;                            // AI effort on aging (%)
   endAtCross: boolean;                      // Stop at crossover
   seed: number;                             // 0 = random
+  lemax: number;                            // Maximum life expectancy
+  q0: number;                               // Aging research difficulty
 }
 
 // ── Defaults ─────────────────────────────────────────────────────────────────
@@ -60,6 +62,8 @@ export const DEFAULTS: Readonly<Params> = {
   aging: 10,
   endAtCross: true,
   seed: 0,
+  lemax: 500,
+  q0: 20,
 };
 
 // ── Ranges for validation and Settings UI ────────────────────────────────────
@@ -91,6 +95,8 @@ export const PARAM_RANGES: Record<string, ParamRange> = {
   pand:    { min: 0,   max: 20,     step: 0.5,  group: 'Events',            label: 'Pandemic chance',            hint: '',                                                                                                                              format: v => `${v}% per year` },
   surprise:{ min: 0,   max: 200,    step: 5,    group: 'Events',            label: 'Surprise breakthroughs',     hint: '',                                                                                                                              format: v => `${v}% of normal` },
   aging:   { min: 0,   max: 50,     step: 1,    group: 'Aging and ending',  label: 'AI effort on aging itself',  hint: 'Needed for longevity escape velocity. Curing diseases alone caps life expectancy near 90.',                                      format: v => `${v}% of AI research` },
+  lemax:   { min: 80,  max: 1000,   step: 10,   group: 'Aging and ending',  label: 'Maximum life expectancy',    hint: 'Theoretical maximum life expectancy achievable through aging research.',                                                         format: v => `${v} years` },
+  q0:      { min: 1,   max: 100,    step: 1,    group: 'Aging and ending',  label: 'Aging research difficulty',  hint: 'How much aging research is needed to slow aging rate toward the minimum.',                                                      format: v => `${v}` },
 };
 
 // ── Shared data types ────────────────────────────────────────────────────────
@@ -151,4 +157,4 @@ export const PRIORITY_LABELS: Record<Params['priority'], string> = {
   aging:     'Aging first',
 };
 
-export const ENGINE_VERSION = '1.0.0';
+export const ENGINE_VERSION = '1.1.0';

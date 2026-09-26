@@ -21,7 +21,7 @@ export function SetupModal({ getParams, onStart }: SetupModalProps) {
           How does AI grow?
         </h2>
         <p className="hint" style={{ marginBottom: 16 }}>
-          Pick one, then watch it play out. Everything else is adjustable in Settings.
+          Pick one, then watch it play out.
         </p>
 
         <div role="radiogroup" aria-label="Growth shape" style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 20 }}>

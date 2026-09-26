@@ -33,6 +33,9 @@ export function recompute(state: SimState): Metrics {
   let totalBurden = 0;
   let avertedBurden = 0;
 
+  let H = 0;
+  let O = 0;
+
   for (let i = 0; i < state.N; i++) {
     const s = state.stage[i];
     counts[s]++;
@@ -47,8 +50,21 @@ export function recompute(state: SimState): Metrics {
       } else if (s === 4) {
         avertedBurden += b;
       }
+
+      const w = (s === 1 || s === 2) ? 1 : (s === 3 ? 0.5 : 0);
+      if (w > 0) {
+        const rawB = state.burden[i] * w;
+        if (state.type[i] === 2 || state.type[i] === 3) {
+          H += rawB;
+        } else {
+          O += rawB;
+        }
+      }
     }
   }
+
+  state.H = H;
+  state.O = O;
 
   const remaining = counts[1] + counts[2] + counts[3];
   const eradCum = counts[4];

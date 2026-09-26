@@ -116,38 +116,78 @@ describe('determinism', () => {
 // ── Golden run (seed 12345) ──────────────────────────────────────────────────
 
 describe('golden run (seed 12345)', () => {
-  const params: Params = { ...DEFAULTS, seed: 12345 };
-  const summary = runToEnd(params);
+  describe('ending at the crossover', () => {
+    const params: Params = { ...DEFAULTS, seed: 12345 };
+    const summary = runToEnd(params);
 
-  it('crossover year = 2054', () => {
-    expect(summary.crossYear).toBe(2054);
+    it('crossover year = 2054', () => {
+      expect(summary.crossYear).toBe(2054);
+    });
+
+    it('escape velocity year = 2033', () => {
+      expect(summary.levYear).toBe(2033);
+    });
+
+    it('eradicated at end = 6,092', () => {
+      expect(summary.eradicated).toBe(6092);
+    });
+
+    it('remaining at end = 33,942', () => {
+      expect(summary.remaining).toBe(33942);
+    });
+
+    it('healthy years gained ≈ 21,453,310,019', () => {
+      expect(summary.healthyYears).toBe(21453310019);
+    });
+
+    it('life expectancy at end ≈ 257.175', () => {
+      expect(summary.lifeExpectancy).toBeCloseTo(257.175, 3);
+    });
+
+    it('pandemics = 5, platforms = 3, safety scares = 5', () => {
+      expect(summary.pandemics).toBe(5);
+      expect(summary.platforms).toBe(3);
+      expect(summary.safetyScares).toBe(5);
+    });
   });
 
-  it('escape velocity year = 2051', () => {
-    expect(summary.levYear).toBe(2051);
-  });
+  describe('with endAtCross = false', () => {
+    const params: Params = { ...DEFAULTS, seed: 12345, endAtCross: false };
+    const summary = runToEnd(params);
 
-  it('eradicated at end = 6,092', () => {
-    expect(summary.eradicated).toBe(6092);
-  });
+    it('full eradication in 2080', () => {
+      expect(summary.fullYear).toBe(2080);
+    });
 
-  it('remaining at end = 33,942', () => {
-    expect(summary.remaining).toBe(33942);
+    it('life expectancy at end ≈ 498.365', () => {
+      expect(summary.lifeExpectancy).toBeCloseTo(498.365, 3);
+    });
   });
+});
 
-  it('healthy years gained ≈ 22,594,795,676', () => {
-    expect(summary.healthyYears).toBe(22594795676);
-  });
+// ── Longevity scaling tests (seeds 1 to 20) ───────────────────────────────────
 
-  it('life expectancy at end ≈ 99.539', () => {
-    expect(summary.lifeExpectancy).toBeCloseTo(99.539, 3);
-  });
+describe('longevity scaling tests (seeds 1 to 20)', () => {
+  const growthModels = ['exp', 'waves'] as const;
 
-  it('pandemics = 5, platforms = 3, safety scares = 5', () => {
-    expect(summary.pandemics).toBe(5);
-    expect(summary.platforms).toBe(3);
-    expect(summary.safetyScares).toBe(5);
-  });
+  for (const growth of growthModels) {
+    it(`growth "${growth}": LE at full eradication is between 490 and 500, never exceeds 500`, () => {
+      for (let seed = 1; seed <= 20; seed++) {
+        const state = createSim({ ...DEFAULTS, seed, growth, endAtCross: false });
+        let maxLE = 0;
+        while (!state.done) {
+          step(state);
+          if (state.LE > maxLE) maxLE = state.LE;
+          expect(state.LE).toBeLessThanOrEqual(500);
+        }
+        const summary = summarize(state);
+        expect(summary.fullYear).not.toBeNull();
+        expect(summary.lifeExpectancy).toBeGreaterThanOrEqual(490);
+        expect(summary.lifeExpectancy).toBeLessThanOrEqual(500);
+        expect(maxLE).toBeLessThanOrEqual(500);
+      }
+    });
+  }
 });
 
 // ── Performance ──────────────────────────────────────────────────────────────

@@ -9,6 +9,7 @@ import type { EventEntry } from './params.js';
 import {
   TYPE_INFO, FAMILIES, NAMED_DISEASES, BASELINE_LE,
   START_YEAR, END_YEAR, MAX_EVENTS, TOTAL_FAMILIES,
+  A_EXT, A_DIS, G0, B_INT, D_AGE, lifeExp,
 } from './catalog.js';
 import { recompute } from './metrics.js';
 import { fmtBig } from './format.js';
@@ -445,21 +446,22 @@ export function step(state: SimState): void {
     addEvent(state, `AI research capability passes ${fmtBig(Math.pow(10, logC))}\u00d7 today`, 'ai');
   }
 
-  const headroom = Math.max(0, 515 - state.LE);
-  const rawGain = 0.15 * Math.pow(Math.max(0, D_aging), 0.75) * (0.2 + 0.8 * c);
-  const deltaAging = Math.min(headroom * 0.35, rawGain);
-  state.agingGain += deltaAging;
-
   // ═══════════════════════════════════════════════════════════════════════════
   // STEP 13: BURDEN, LIFE EXPECTANCY, YEAR RECORD
   // ═══════════════════════════════════════════════════════════════════════════
 
+  state.Q += Math.log10(1 + D_aging) * (0.2 + 0.8 * c) * (1 - 0.5 * state.reg);
+  state.G = state.Gmin + (G0 - state.Gmin) * Math.exp(-state.Q / params.q0);
+  const prevGain = state.agingGain;
   const prevLE = state.LE;
   const metrics = recompute(state);
+  const A = A_EXT + A_DIS * (state.O / state.O0);
+  const B = B_INT * (1 + D_AGE * (state.H / state.H0));
+  state.LE = lifeExp(A, B, state.G);
+  state.LEdis = lifeExp(A, B, G0);
+  state.agingGain = state.LE - state.LEdis;
+  const deltaAging = state.agingGain - prevGain;
 
-  if (metrics.totalBurden > 0) {
-    state.LE = BASELINE_LE + 16.7 * (metrics.avertedBurden / metrics.totalBurden) + state.agingGain;
-  }
   state.healthyYears += metrics.avertedBurden;
 
   const dLE = state.LE - prevLE;

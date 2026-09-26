@@ -6,6 +6,7 @@
     "dev": "concurrently -n web,api -c cyan,magenta \"pnpm --filter @tld/web dev\" \"pnpm --filter @tld/api dev\"",
     "test": "pnpm --filter @tld/engine test",
     "test:engine": "pnpm --filter @tld/engine test",
+    "test:web": "pnpm --filter @tld/web test",
     "build": "pnpm -r build",
     "deploy": "powershell -ExecutionPolicy Bypass -File infra/deploy.ps1"
   },

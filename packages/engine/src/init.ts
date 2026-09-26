@@ -7,9 +7,11 @@ import { RNG } from './rng.js';
 import {
   TYPE_INFO, FAMILIES, NAMED_DISEASES, TOTAL_BURDEN, BASELINE_LE,
   PANDEMIC_RESERVE, START_YEAR, TOTAL_KNOWN, TOTAL_FAMILIES, MAX_EVENTS,
+  G0, solveGmin,
 } from './catalog.js';
 import type { Params, YearRecord, EventEntry } from './params.js';
 import { fmtNum } from './format.js';
+import { recompute } from './metrics.js';
 
 // ── SimState ─────────────────────────────────────────────────────────────────
 
@@ -20,6 +22,14 @@ export interface SimState {
   C: number;
   reg: number;
   LE: number;
+  LEdis: number;
+  G: number;
+  Q: number;
+  Gmin: number;
+  O: number;
+  H: number;
+  O0: number;
+  H0: number;
   agingGain: number;
   diversion: number;
   poolLeft: number;
@@ -289,6 +299,14 @@ export function createSim(params: Params): SimState {
     C: 1,
     reg,
     LE: BASELINE_LE,
+    LEdis: 73.3,
+    G: G0,
+    Q: 0,
+    Gmin: solveGmin(resolvedParams.lemax),
+    O: 0,
+    H: 0,
+    O0: 0,
+    H0: 0,
     agingGain: 0,
     diversion: 0,
     poolLeft: resolvedParams.pool,
@@ -327,6 +345,10 @@ export function createSim(params: Params): SimState {
     usedFamilies: new Array(TOTAL_FAMILIES).fill(false),
     escapeVelocityReached: false,
   };
+
+  recompute(state);
+  state.O0 = state.O;
+  state.H0 = state.H;
 
   return state;
 }
