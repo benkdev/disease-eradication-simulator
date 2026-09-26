@@ -8,6 +8,8 @@
     "test:engine": "pnpm --filter @tld/engine test",
     "test:web": "pnpm --filter @tld/web test",
     "test:e2e": "pnpm --filter @tld/web test:e2e",
+    "allure:generate": "pnpm --filter @tld/web allure:generate",
+    "allure:open": "pnpm --filter @tld/web allure:open",
     "build": "pnpm -r build",
     "deploy": "powershell -ExecutionPolicy Bypass -File infra/deploy.ps1"
   },

@@ -10,6 +10,8 @@ out/
 *.tsbuildinfo
 test-results/
 playwright-report/
+allure-results/
+allure-report/
 
 # Environment variables & secrets
 .env
