@@ -445,7 +445,9 @@ export function step(state: SimState): void {
     addEvent(state, `AI research capability passes ${fmtBig(Math.pow(10, logC))}\u00d7 today`, 'ai');
   }
 
-  const deltaAging = Math.min(2.5, 0.012 * Math.sqrt(D_aging) * (0.2 + 0.8 * c));
+  const headroom = Math.max(0, 515 - state.LE);
+  const rawGain = 0.15 * Math.pow(Math.max(0, D_aging), 0.75) * (0.2 + 0.8 * c);
+  const deltaAging = Math.min(headroom * 0.35, rawGain);
   state.agingGain += deltaAging;
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -456,7 +458,7 @@ export function step(state: SimState): void {
   const metrics = recompute(state);
 
   if (metrics.totalBurden > 0) {
-    state.LE = Math.min(500, BASELINE_LE + 16.7 * (metrics.avertedBurden / metrics.totalBurden) + state.agingGain);
+    state.LE = BASELINE_LE + 16.7 * (metrics.avertedBurden / metrics.totalBurden) + state.agingGain;
   }
   state.healthyYears += metrics.avertedBurden;
 
