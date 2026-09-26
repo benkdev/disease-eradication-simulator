@@ -9,6 +9,7 @@ export {
   TYPE_INFO, FAMILIES, NAMED_DISEASES, DISEASE_NAMES,
   TOTAL_BURDEN, BASELINE_LE, LE_GAIN_CAP, PANDEMIC_RESERVE,
   START_YEAR, END_YEAR, MAX_EVENTS, TOTAL_FAMILIES, TOTAL_KNOWN,
+  A_EXT, A_DIS, G0, B_INT, D_AGE, lifeExp, solveGmin,
 } from './catalog.js';
 export type { TypeInfo, FamilyInfo, NamedDiseaseInfo } from './catalog.js';
 export {

@@ -7,8 +7,47 @@
 
 import { useRef, useEffect, useCallback, useMemo } from 'react';
 import type { YearRecord } from '../engine';
-import { seriesBounds } from '../engine';
-import { VARIABLE_DEFS } from '../components/VariableCards';
+import { seriesBounds, type SeriesBoundsMap } from '../engine';
+import { VARIABLE_DEFS, type VarDef } from '../components/VariableCards';
+
+export interface LineBounds {
+  lo: number;
+  hi: number;
+}
+
+export function getLineBounds(
+  def: VarDef,
+  bounds: SeriesBoundsMap
+): LineBounds {
+  const b = bounds[def.key];
+  if (def.key === 'LE') {
+    return {
+      lo: 73,
+      hi: bounds.LE ? bounds.LE.max : (b?.max ?? 73),
+    };
+  }
+  if (def.scale === 'log') {
+    const bLogMin = b?.logMin ?? (b?.min !== undefined ? Math.log10(Math.max(1, b.min)) : 0);
+    const bLogMax = b?.logMax ?? (b?.max !== undefined ? Math.log10(Math.max(1, b.max)) : 1);
+    const lo = def.lo !== undefined ? def.lo : bLogMin;
+    const hi = def.hi !== undefined ? def.hi : bLogMax;
+    return { lo, hi };
+  }
+  const lo = def.lo !== undefined ? def.lo : (b?.min ?? 0);
+  const hi = def.hi !== undefined ? def.hi : (b?.max ?? 1);
+  return { lo, hi };
+}
+
+export function computeLineY(
+  v: number,
+  lo: number,
+  hi: number,
+  plotT: number,
+  plotH: number
+): number {
+  const range = hi - lo || 1;
+  return plotT + plotH * (1 - (v - lo) / range);
+}
 
 interface MainGraphProps {
   fullHist?: YearRecord[];
@@ -154,21 +193,8 @@ export function MainGraph({
       const color = getCSS(def.color);
 
       // Bounds from seriesBounds(fullHist) with fixed bounds taking priority
-      const b = bounds[def.key];
-      let lo: number;
-      let hi: number;
-      if (def.scale === 'log') {
-        const bLogMin = b?.logMin ?? (b?.min !== undefined ? Math.log10(Math.max(1, b.min)) : 0);
-        const bLogMax = b?.logMax ?? (b?.max !== undefined ? Math.log10(Math.max(1, b.max)) : 1);
-        lo = def.lo !== undefined ? def.lo : bLogMin;
-        hi = def.hi !== undefined ? def.hi : bLogMax;
-      } else {
-        lo = def.lo !== undefined ? def.lo : (b?.min ?? 0);
-        hi = def.hi !== undefined ? def.hi : (b?.max ?? 1);
-      }
-      const range = hi - lo || 1;
-
-      const yForVal = (v: number) => plotT + plotH * (1 - (v - lo) / range);
+      const { lo, hi } = getLineBounds(def, bounds);
+      const yForVal = (v: number) => computeLineY(v, lo, hi, plotT, plotH);
 
       if (visibleHist.length === 0) continue;
 

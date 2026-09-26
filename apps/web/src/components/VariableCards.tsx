@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { fmtBig, fmtNum, type YearRecord } from '@tld/engine';
 
 // Variable definitions matching spec Section 6 exactly
-interface VarDef {
+export interface VarDef {
   key: keyof YearRecord;
   name: string;
   color: string;
