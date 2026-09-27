@@ -21,26 +21,36 @@ export function Controls({
         <button
           className="primary"
           data-testid="play-pause-btn"
+          aria-label={playing ? 'Pause simulation' : 'Play simulation'}
           onClick={onTogglePlay}
           disabled={done}
           style={{ minWidth: 92 }}
         >
           {playing ? 'Pause' : 'Play'}
         </button>
-        <button data-testid="step-once-btn" onClick={onStepOnce} disabled={done}>
+        <button
+          data-testid="step-once-btn"
+          aria-label="Advance simulation by one year"
+          onClick={onStepOnce}
+          disabled={done}
+        >
           +1 year
         </button>
-        <button data-testid="new-run-btn" onClick={onNewRun}>
+        <button
+          data-testid="new-run-btn"
+          aria-label="Start a new simulation run"
+          onClick={onNewRun}
+        >
           New run
         </button>
       </div>
 
       {/* Speed control */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        <span className="hint" style={{ fontSize: '0.8rem' }}>Years per second</span>
+        <span className="hint" id="speed-label" style={{ fontSize: '0.8rem' }}>Years per second</span>
         <div
           role="group"
-          aria-label="Simulation speed"
+          aria-labelledby="speed-label"
           style={{
             display: 'inline-flex',
             border: '1px solid var(--line)',
@@ -52,6 +62,7 @@ export function Controls({
             <button
               key={s}
               aria-pressed={speed === s}
+              aria-label={`${s} years per second`}
               data-testid={`speed-btn-${s}`}
               onClick={() => onSetSpeed(s)}
               style={{

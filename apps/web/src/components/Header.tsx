@@ -32,6 +32,8 @@ export function Header({ scenarioLabel, year, C, started }: HeaderProps) {
       <div style={{ textAlign: 'right', flexShrink: 0 }}>
         <div
           data-testid="header-year"
+          role="status"
+          aria-label={`Current simulation year: ${year}`}
           style={{
             fontSize: 'clamp(3rem, 15vw, 5.2rem)',
             fontWeight: 800,

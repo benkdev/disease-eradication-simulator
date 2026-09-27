@@ -145,9 +145,17 @@ export function RaceChart({ fullHist: propFullHist, currentYear: propCurrentYear
 
   return (
     <div style={{ marginBottom: 16 }}>
-      <h2 className="section-heading">The race: new diseases vs cures</h2>
+      <h2 className="section-heading" id="race-chart-heading">The race: new diseases vs cures</h2>
       <div ref={containerRef} className="panel" style={{ height: 170 }}>
-        <canvas ref={canvasRef} style={{ width: '100%', height: '100%', display: 'block' }} />
+        <canvas
+          ref={canvasRef}
+          role="img"
+          aria-labelledby="race-chart-heading"
+          aria-label="Log-scale chart plotting new diseases found per year versus diseases eradicated per year"
+          style={{ width: '100%', height: '100%', display: 'block' }}
+        >
+          Log-scale comparison chart between newly discovered diseases and eradicated diseases per year.
+        </canvas>
       </div>
       <p className="hint" style={{ marginTop: 4 }}>
         Log scale. Pink = new diseases found per year. Green = diseases eradicated per year.

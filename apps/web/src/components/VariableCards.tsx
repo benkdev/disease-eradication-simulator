@@ -69,6 +69,7 @@ export function VariableCards({ rec, cursorActive, enabled: propEnabled, onToggl
           <button
             key={def.key}
             aria-pressed={on}
+            aria-label={`Toggle ${def.name}: currently ${on ? 'shown' : 'hidden'}, value is ${rec ? def.format(value) : 'unavailable'}`}
             onClick={() => toggle(i)}
             data-var-idx={i}
             data-testid={`var-card-${def.key}`}

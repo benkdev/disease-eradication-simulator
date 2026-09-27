@@ -24,13 +24,19 @@ export function EventLog({ events, currentYear }: EventLogProps) {
 
   return (
     <div style={{ marginBottom: 16 }}>
-      <h2 className="section-heading">What happened</h2>
-      <div style={{
-        maxHeight: 260,
-        overflowY: 'auto',
-        fontSize: '0.8rem',
-        lineHeight: 1.4,
-      }}>
+      <h2 className="section-heading" id="event-log-heading">What happened</h2>
+      <div
+        role="log"
+        aria-labelledby="event-log-heading"
+        tabIndex={0}
+        style={{
+          maxHeight: 260,
+          overflowY: 'auto',
+          fontSize: '0.8rem',
+          lineHeight: 1.4,
+          padding: '4px 0',
+        }}
+      >
         {displayed.map((ev, i) => {
           const style = KIND_STYLES[ev.kind];
           return (

@@ -141,9 +141,17 @@ export function LongevityChart({ fullHist: propFullHist, currentYear: propCurren
 
   return (
     <div style={{ marginBottom: 16 }}>
-      <h2 className="section-heading">Longevity</h2>
+      <h2 className="section-heading" id="longevity-chart-heading">Longevity</h2>
       <div ref={containerRef} className="panel" style={{ height: 170 }}>
-        <canvas ref={canvasRef} style={{ width: '100%', height: '100%', display: 'block' }} />
+        <canvas
+          ref={canvasRef}
+          role="img"
+          aria-labelledby="longevity-chart-heading"
+          aria-label="Longevity chart plotting years of life added per year by aging research over time"
+          style={{ width: '100%', height: '100%', display: 'block' }}
+        >
+          Longevity curve charting years of healthy life added per year against longevity escape velocity threshold of 1.0.
+        </canvas>
       </div>
       <p className="hint" style={{ marginTop: 4 }}>
         Years of life added per year by aging research. Longevity escape velocity is when this stays above 1.
