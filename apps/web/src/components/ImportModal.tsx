@@ -31,10 +31,15 @@ export function ImportModal({ onClose, onReplay, onSimulate }: ImportModalProps)
     try {
       let parsed: SimulationExportPayload;
       const lower = name.toLowerCase();
-      if (lower.endsWith('.csv') || (!lower.endsWith('.json') && content.includes(','))) {
-        parsed = parseExportedCSV(content);
-      } else {
+      const trimmed = content.trim();
+      if (lower.endsWith('.json') || trimmed.startsWith('{')) {
         parsed = parseExportedJSON(content);
+      } else {
+        parsed = parseExportedCSV(content);
+      }
+
+      if (!Array.isArray(parsed?.history) || parsed.history.length === 0) {
+        throw new Error('Export file must contain at least one valid year record.');
       }
 
       setFileName(name);
@@ -71,6 +76,7 @@ export function ImportModal({ onClose, onReplay, onSimulate }: ImportModalProps)
       setError('Error reading file. Please try again.');
     };
     reader.readAsText(file);
+    e.target.value = '';
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -92,12 +98,17 @@ export function ImportModal({ onClose, onReplay, onSimulate }: ImportModalProps)
       const content = evt.target?.result as string;
       if (content) processFileContent(file.name, content);
     };
+    reader.onerror = () => {
+      setError('Error reading file. Please try again.');
+    };
     reader.readAsText(file);
   };
 
   const finalYear =
     payload?.summary?.endYear ??
-    (payload && payload.history.length > 0 ? payload.history[payload.history.length - 1].y : 2026);
+    (payload?.history && payload.history.length > 0
+      ? payload.history[payload.history.length - 1].y
+      : 2026);
 
   const seed = payload?.seed ?? payload?.summary?.seed ?? 'Unknown';
 

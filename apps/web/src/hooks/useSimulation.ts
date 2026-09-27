@@ -323,7 +323,7 @@ export function useSimulation(): SimController {
         : { ...DEFAULTS, seed: seedNum };
       baseParams.growth = chosenGrowth;
       if (seedNum > 0) baseParams.seed = seedNum;
-      baseParams.endAtCross = true;
+      baseParams.endAtCross = payload.params?.endAtCross ?? true;
       paramsRef.current = baseParams;
       setReplayingBanner(false);
       startRun(chosenGrowth);

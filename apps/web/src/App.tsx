@@ -155,7 +155,7 @@ export default function App() {
         <HowItWorks />
       </main>
 
-      {sim.showSetup && (
+      {sim.showSetup && !showImport && (
         <SetupModal
           getParams={sim.getParams}
           onStart={sim.startRun}
