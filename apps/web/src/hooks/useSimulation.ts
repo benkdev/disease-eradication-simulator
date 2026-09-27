@@ -16,6 +16,7 @@ import {
   type SimResult,
 } from '../engine';
 import { paramsFromQueryString, syncParamsToUrl } from '../utils/urlState';
+import type { SimulationExportPayload } from '../utils/exportData';
 
 export interface SimController {
   result: SimResult | null;
@@ -50,6 +51,8 @@ export interface SimController {
   keepGoing: () => void;
   getParams: () => Params;
   updateParam: <K extends keyof Params>(key: K, value: Params[K]) => void;
+  importAndReplay: (payload: SimulationExportPayload) => void;
+  importAndSimulate: (payload: SimulationExportPayload, chosenGrowth: Params['growth']) => void;
 }
 
 export function useSimulation(): SimController {
@@ -257,6 +260,75 @@ export function useSimulation(): SimController {
     syncParamsToUrl(paramsRef.current);
   }, []);
 
+  const importAndReplay = useCallback((payload: SimulationExportPayload) => {
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    const hist = payload.history;
+    const finalYear = hist.length > 0 ? hist[hist.length - 1].y : 2026;
+    const summary = payload.summary ?? {
+      seed: Number(payload.seed) || 0,
+      outcome: hist[hist.length - 1]?.rem === 0 ? 'full' : 'crossover',
+      endYear: finalYear,
+      crossYear: null,
+      levYear: null,
+      fullYear: null,
+      eradicated: hist[hist.length - 1]?.eradCum ?? 0,
+      remaining: hist[hist.length - 1]?.rem ?? 0,
+      healthyYears: Math.round(hist[hist.length - 1]?.healthy ?? 0),
+      lifeExpectancy: hist[hist.length - 1]?.LE ?? 73,
+      pandemics: 0,
+      platforms: 0,
+      safetyScares: 0,
+      resistanceEvents: 0,
+      plateauCount: 0,
+      finalCapability: hist[hist.length - 1]?.C ?? 1,
+    };
+
+    const mockResult: SimResult = {
+      params: payload.params ?? { ...DEFAULTS, seed: Number(payload.seed) || 0 },
+      hist,
+      eventsAll: [],
+      plateaus: [],
+      crossYear: summary.crossYear ?? null,
+      levYear: summary.levYear ?? null,
+      fullYear: summary.fullYear ?? null,
+      year: finalYear,
+      done: true,
+      summary,
+    };
+
+    resultRef.current = mockResult;
+    setResult(mockResult);
+    setSummary(summary);
+    currentYearRef.current = finalYear;
+    setCurrentYear(finalYear);
+    setDone(true);
+    doneRef.current = true;
+    setPlaying(false);
+    playingRef.current = false;
+    setShowSetup(false);
+    setShowResults(false);
+    setCursorYear(null);
+    setReplayingBanner(true);
+    setScenarioLabel(payload.scenario || 'Imported simulation run');
+  }, []);
+
+  const importAndSimulate = useCallback(
+    (payload: SimulationExportPayload, chosenGrowth: Params['growth']) => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      const seedNum = Number(payload.seed) || 0;
+      const baseParams: Params = payload.params
+        ? { ...payload.params }
+        : { ...DEFAULTS, seed: seedNum };
+      baseParams.growth = chosenGrowth;
+      if (seedNum > 0) baseParams.seed = seedNum;
+      baseParams.endAtCross = true;
+      paramsRef.current = baseParams;
+      setReplayingBanner(false);
+      startRun(chosenGrowth);
+    },
+    [startRun]
+  );
+
   // Replay shared run on /run/:id
   useEffect(() => {
     const path = window.location.pathname;
@@ -357,5 +429,7 @@ export function useSimulation(): SimController {
     keepGoing,
     getParams,
     updateParam,
+    importAndReplay,
+    importAndSimulate,
   };
 }

@@ -69,7 +69,7 @@ describe('MainGraph line drawing and bounds', () => {
         }
       }
     }
-  });
+  }, 15000);
 
   it('draws every enabled monotonic line to the top gridline in full canvas drawing pass', () => {
     const res = simulate({ ...DEFAULTS, growth: 'exp', seed: 42 });

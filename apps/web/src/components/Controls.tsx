@@ -9,6 +9,7 @@ interface ControlsProps {
   onNewRun: () => void;
   onSetSpeed: (s: number) => void;
   onShare?: () => void;
+  onOpenImport?: () => void;
 }
 
 const SPEEDS = [1, 2, 4, 10];
@@ -22,6 +23,7 @@ export function Controls({
   onNewRun,
   onSetSpeed,
   onShare,
+  onOpenImport,
 }: ControlsProps) {
   const [copied, setCopied] = useState(false);
 
@@ -62,6 +64,16 @@ export function Controls({
         >
           New run
         </button>
+        {onOpenImport && (
+          <button
+            data-testid="import-btn"
+            aria-label="Import previous simulation run"
+            onClick={onOpenImport}
+            title="Import a saved run (.json or .csv)"
+          >
+            Import
+          </button>
+        )}
         {onShare && (
           <button
             data-testid="share-btn"
