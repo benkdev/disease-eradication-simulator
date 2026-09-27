@@ -313,6 +313,27 @@ export function MainGraph({
     onCursorChange(clamped);
   }, [fullHist, currentYear, onCursorChange]);
 
+  const visibleHist = useMemo(
+    () => fullHist.filter(r => r.y <= currentYear),
+    [fullHist, currentYear]
+  );
+  const latestRec = visibleHist.length > 0 ? visibleHist[visibleHist.length - 1] : null;
+
+  const milestones = useMemo(() => {
+    if (visibleHist.length === 0) return [];
+    const set = new Set<number>();
+    const startY = visibleHist[0].y;
+    const lastY = visibleHist[visibleHist.length - 1].y;
+    set.add(startY);
+    set.add(lastY);
+    if (crossYear && crossYear <= currentYear) set.add(crossYear);
+    if (levYear && levYear <= currentYear) set.add(levYear);
+    for (const r of visibleHist) {
+      if (r.y % 5 === 0) set.add(r.y);
+    }
+    return visibleHist.filter(r => set.has(r.y));
+  }, [visibleHist, crossYear, levYear, currentYear]);
+
   return (
     <div
       ref={containerRef}
@@ -334,6 +355,42 @@ export function MainGraph({
       >
         Dynamic multi-line chart displaying AI capability, regulation, diseases remaining, disease eradications, and life expectancy from 2026 onwards.
       </canvas>
+
+      {/* Accessible screen-reader data summary and table for WCAG 2.1 AA */}
+      <div className="sr-only" aria-live="polite" data-testid="main-graph-sr-summary">
+        <h3>Simulation Timeline Data Summary</h3>
+        <p>
+          {`Current simulation year is ${currentYear}. `}
+          {latestRec
+            ? `AI capability is ${latestRec.C.toFixed(1)}x, life expectancy is ${latestRec.LE.toFixed(1)} years, and ${latestRec.erad} diseases have been eradicated.`
+            : ''}
+          {crossYear && currentYear >= crossYear ? ` Crossover was reached in ${crossYear}.` : ''}
+          {levYear && currentYear >= levYear ? ` Longevity escape velocity was reached in ${levYear}.` : ''}
+        </p>
+        <table>
+          <caption>Simulation milestone and decadal data points</caption>
+          <thead>
+            <tr>
+              <th scope="col">Year</th>
+              <th scope="col">AI Capability</th>
+              <th scope="col">Eradicated Diseases</th>
+              <th scope="col">Life Expectancy</th>
+              <th scope="col">Regulation</th>
+            </tr>
+          </thead>
+          <tbody>
+            {milestones.map(r => (
+              <tr key={r.y}>
+                <th scope="row">{r.y}</th>
+                <td>{r.C?.toFixed(1) ?? '1.0'}x</td>
+                <td>{r.eradCum ?? r.erad ?? 0}</td>
+                <td>{r.LE?.toFixed(1) ?? '73.0'} yrs</td>
+                <td>{r.reg !== undefined ? (r.reg * 100).toFixed(0) : '50'}%</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

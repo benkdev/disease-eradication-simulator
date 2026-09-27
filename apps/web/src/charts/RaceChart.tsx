@@ -156,6 +156,13 @@ export function RaceChart({ fullHist: propFullHist, currentYear: propCurrentYear
         >
           Log-scale comparison chart between newly discovered diseases and eradicated diseases per year.
         </canvas>
+
+        <div className="sr-only" aria-live="polite" data-testid="race-chart-sr-summary">
+          <p>
+            {`Year ${currentYear}: ${fullHist.find(r => r.y === currentYear)?.newF ?? 0} new diseases discovered per year, ${fullHist.find(r => r.y === currentYear)?.erad ?? 0} diseases eradicated per year.`}
+            {crossYear && currentYear >= crossYear ? ` Crossover point reached in ${crossYear}.` : ' Crossover not yet reached.'}
+          </p>
+        </div>
       </div>
       <p className="hint" style={{ marginTop: 4 }}>
         Log scale. Pink = new diseases found per year. Green = diseases eradicated per year.

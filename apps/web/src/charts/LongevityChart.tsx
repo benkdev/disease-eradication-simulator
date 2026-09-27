@@ -152,6 +152,13 @@ export function LongevityChart({ fullHist: propFullHist, currentYear: propCurren
         >
           Longevity curve charting years of healthy life added per year against longevity escape velocity threshold of 1.0.
         </canvas>
+
+        <div className="sr-only" aria-live="polite" data-testid="longevity-chart-sr-summary">
+          <p>
+            {`Year ${currentYear}: ${fullHist.find(r => r.y === currentYear)?.dAg?.toFixed(2) ?? '0.00'} years of healthy life added per year.`}
+            {levYear && currentYear >= levYear ? ` Longevity escape velocity was reached in ${levYear}.` : ' Longevity escape velocity not yet reached.'}
+          </p>
+        </div>
       </div>
       <p className="hint" style={{ marginTop: 4 }}>
         Years of life added per year by aging research. Longevity escape velocity is when this stays above 1.
