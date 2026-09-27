@@ -43,7 +43,7 @@ export interface SimController {
 
   setSpeed: (s: number) => void;
   setCursorYear: (y: number | null) => void;
-  startRun: (growth: Params['growth']) => void;
+  startRun: (growth: Params['growth'], endAtCross?: boolean) => void;
   togglePlay: () => void;
   stepOnce: () => void;
   newRun: () => void;
@@ -159,9 +159,9 @@ export function useSimulation(): SimController {
     setSpeed(s);
   }, []);
 
-  const startRun = useCallback((growth: Params['growth']) => {
+  const startRun = useCallback((growth: Params['growth'], endAtCross: boolean = true) => {
     paramsRef.current.growth = growth;
-    paramsRef.current.endAtCross = true;
+    paramsRef.current.endAtCross = endAtCross;
     syncParamsToUrl(paramsRef.current);
     const res = simulate(paramsRef.current);
     resultRef.current = res;
@@ -326,7 +326,7 @@ export function useSimulation(): SimController {
       baseParams.endAtCross = payload.params?.endAtCross ?? true;
       paramsRef.current = baseParams;
       setReplayingBanner(false);
-      startRun(chosenGrowth);
+      startRun(chosenGrowth, baseParams.endAtCross);
     },
     [startRun]
   );
@@ -381,7 +381,7 @@ export function useSimulation(): SimController {
       paramsRef.current = parsed;
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.has('growth') || urlParams.has('seed')) {
-        startRun(parsed.growth);
+        startRun(parsed.growth, parsed.endAtCross);
       }
     }
   }, [startRun]);
