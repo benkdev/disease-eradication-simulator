@@ -41,12 +41,10 @@ export function ImportModal({ onClose, onReplay, onSimulate }: ImportModalProps)
       setPayload(parsed);
 
       // Determine original growth mode
+      const scenarioText = (parsed.scenario ?? '').toLowerCase();
       const detectedGrowth: Params['growth'] =
         parsed.params?.growth ??
-        (parsed.scenario.toLowerCase().includes('plateau') ||
-        parsed.scenario.toLowerCase().includes('wave')
-          ? 'waves'
-          : 'exp');
+        (scenarioText.includes('plateau') || scenarioText.includes('wave') ? 'waves' : 'exp');
 
       setOriginalGrowth(detectedGrowth);
       setSelectedGrowth(detectedGrowth);
