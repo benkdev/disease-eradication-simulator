@@ -84,7 +84,7 @@ export function step(state: SimState): void {
     } else {
       state.C = state.C * (1 + g);
       if (state.C >= state.K) {
-        state.C = state.K;
+        state.C = Math.max(C_old, state.K);
         const u = rng.uniform();
         state.plLeft = Math.max(1, Math.round(params.plen * (0.5 + u)));
         state.plateaus.push([state.year + 1, null]);
@@ -472,6 +472,9 @@ export function step(state: SimState): void {
         // AI capability boost — only if not on a plateau
         if (state.plLeft === 0) {
           state.C = 1.3 * state.C;
+          if (state.C > state.K) {
+            state.K = state.C;
+          }
           addEvent(
             state,
             'Surprise: an unexpected architecture jump boosts AI capability 30%',

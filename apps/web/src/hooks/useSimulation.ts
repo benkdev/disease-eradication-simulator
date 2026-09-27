@@ -15,6 +15,7 @@ import {
   type EventEntry,
   type SimResult,
 } from '../engine';
+import { paramsFromQueryString, syncParamsToUrl } from '../utils/urlState';
 
 export interface SimController {
   result: SimResult | null;
@@ -64,7 +65,11 @@ export function useSimulation(): SimController {
   const [scenarioLabel, setScenarioLabel] = useState('');
   const [replayingBanner, setReplayingBanner] = useState(false);
 
-  const paramsRef = useRef<Params>({ ...DEFAULTS });
+  const paramsRef = useRef<Params>(
+    typeof window !== 'undefined' && window.location.search
+      ? paramsFromQueryString(window.location.search)
+      : { ...DEFAULTS }
+  );
   const resultRef = useRef<SimResult | null>(null);
   const currentYearRef = useRef<number>(2026);
   const playingRef = useRef(false);
@@ -154,6 +159,7 @@ export function useSimulation(): SimController {
   const startRun = useCallback((growth: Params['growth']) => {
     paramsRef.current.growth = growth;
     paramsRef.current.endAtCross = true;
+    syncParamsToUrl(paramsRef.current);
     const res = simulate(paramsRef.current);
     resultRef.current = res;
     setResult(res);
@@ -213,6 +219,8 @@ export function useSimulation(): SimController {
     setReplayingBanner(false);
     if (window.location.pathname.startsWith('/run/')) {
       window.history.pushState(null, '', '/');
+    } else if (window.location.search) {
+      window.history.replaceState(null, '', window.location.pathname);
     }
   }, []);
 
@@ -227,6 +235,7 @@ export function useSimulation(): SimController {
       ...resultRef.current.params,
       endAtCross: false,
     };
+    syncParamsToUrl(nextParams);
     const res = simulate(nextParams);
     resultRef.current = res;
     setResult(res);
@@ -245,6 +254,7 @@ export function useSimulation(): SimController {
   // Settings changes apply to the next run, not the run in progress
   const updateParam = useCallback(<K extends keyof Params>(key: K, value: Params[K]) => {
     paramsRef.current[key] = value;
+    syncParamsToUrl(paramsRef.current);
   }, []);
 
   // Replay shared run on /run/:id
@@ -289,6 +299,18 @@ export function useSimulation(): SimController {
       }
     }
   }, []);
+
+  // Load shared simulation from URL search params on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.search) {
+      const parsed = paramsFromQueryString(window.location.search);
+      paramsRef.current = parsed;
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has('growth') || urlParams.has('seed')) {
+        startRun(parsed.growth);
+      }
+    }
+  }, [startRun]);
 
   const fullHist = result?.hist ?? [];
   const finalYear = result?.year ?? 2026;

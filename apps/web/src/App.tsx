@@ -19,6 +19,7 @@ import { EventLog } from './components/EventLog';
 import { SettingsPanel } from './components/SettingsPanel';
 import { HowItWorks } from './components/HowItWorks';
 import { LiveAnnouncer } from './components/LiveAnnouncer';
+import { copyShareableLink } from './utils/urlState';
 
 export default function App() {
   const sim = useSimulation();
@@ -124,6 +125,7 @@ export default function App() {
                 onStepOnce={sim.stepOnce}
                 onNewRun={sim.newRun}
                 onSetSpeed={sim.setSpeed}
+                onShare={() => copyShareableLink(sim.getParams())}
               />
             </div>
 
