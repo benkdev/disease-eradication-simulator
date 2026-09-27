@@ -43,6 +43,8 @@ export function simulate(params: Engine.Params): SimResult {
       plateaus?: [number, number | null][];
       crossYear?: number | null;
       levYear?: number | null;
+      fullYear?: number | null;
+      year?: number;
       done?: boolean;
     };
     const res = fn(params);

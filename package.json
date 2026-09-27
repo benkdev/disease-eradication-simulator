@@ -9,6 +9,7 @@
     "test:web": "pnpm --filter @tld/web test",
     "test:unit": "pnpm test:engine && pnpm test:web",
     "test:e2e": "pnpm --filter @tld/web test:e2e",
+    "typecheck": "pnpm -r run typecheck",
     "allure:generate": "pnpm --filter @tld/web allure:generate",
     "allure:open": "pnpm --filter @tld/web allure:open",
     "build": "pnpm -r build",
