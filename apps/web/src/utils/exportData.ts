@@ -25,32 +25,36 @@ export function exportToCSV(hist: YearRecord[], seed: number | string): void {
     'AI_Capability',
     'Regulation',
     'Life_Expectancy',
+    'Life_Expectancy_Delta',
+    'Aging_Delta',
     'Healthy_Years_Gained',
-    'Known_Diseases',
-    'Active_Diseases',
-    'Eradicated_Diseases',
-    'Safety_Scares',
-    'Pandemics',
-    'Plateau',
-    'Burst',
+    'Remaining_Diseases',
+    'Eradicated_This_Year',
+    'Cumulative_Eradicated',
+    'New_Diseases_Found',
+    'Trial_Length',
+    'Trial_Success_Rate',
+    'Discoveries_Per_Year',
   ];
 
-  const rows = hist.map(r => [
+  const rows = hist.map((r) => [
     r.y,
     r.C.toFixed(2),
-    r.R.toFixed(1),
+    r.reg.toFixed(3),
     r.LE.toFixed(2),
-    r.gained.toFixed(2),
-    r.known,
-    r.active,
+    r.dLE.toFixed(2),
+    r.dAg.toFixed(3),
+    r.healthy.toFixed(2),
+    r.rem,
     r.erad,
-    r.scares,
-    r.pands,
-    r.plateau ? 'true' : 'false',
-    r.burst ? 'true' : 'false',
+    r.eradCum,
+    r.newF,
+    r.T.toFixed(2),
+    r.p.toFixed(3),
+    r.D.toFixed(2),
   ]);
 
-  const csvContent = [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
+  const csvContent = [headers.join(','), ...rows.map((row) => row.join(','))].join('\n');
   downloadFile(csvContent, `tld-simulation-seed-${seed}.csv`, 'text/csv;charset=utf-8;');
 }
 

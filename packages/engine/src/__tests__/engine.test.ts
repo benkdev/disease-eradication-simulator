@@ -5,8 +5,15 @@
 
 import { describe, it, expect } from 'vitest';
 import {
-  mulberry32, fmtBig, createSim, step, runToEnd, summarize,
-  DEFAULTS, TYPE_INFO, TOTAL_KNOWN,
+  mulberry32,
+  fmtBig,
+  createSim,
+  step,
+  runToEnd,
+  summarize,
+  DEFAULTS,
+  TYPE_INFO,
+  TOTAL_KNOWN,
 } from '../index.js';
 import type { Params } from '../index.js';
 
@@ -15,7 +22,7 @@ import type { Params } from '../index.js';
 describe('mulberry32', () => {
   it('produces the specified sequence for seed 1', () => {
     const rng = mulberry32(1);
-    const expected = [0.6270739406, 0.0027357212, 0.5274470400, 0.9810509675, 0.9683778982];
+    const expected = [0.6270739406, 0.0027357212, 0.52744704, 0.9810509675, 0.9683778982];
     for (const e of expected) {
       const val = rng();
       expect(val).toBeCloseTo(e, 10);
@@ -36,7 +43,7 @@ describe('fmtBig', () => {
 
 describe('M(R)', () => {
   it('returns correct values at R = 0, 0.5, and 1', () => {
-    const M = (R: number) => R < 0.5 ? 1.25 - 0.5 * R : 1 - 1.3 * (R - 0.5);
+    const M = (R: number) => (R < 0.5 ? 1.25 - 0.5 * R : 1 - 1.3 * (R - 0.5));
     expect(M(0)).toBeCloseTo(1.25, 10);
     expect(M(0.5)).toBeCloseTo(1.0, 10);
     expect(M(1)).toBeCloseTo(0.35, 10);

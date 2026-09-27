@@ -29,16 +29,16 @@ Out of scope for version 1: user accounts, multiplayer, and editing the disease 
 
 The app is a TypeScript monorepo with three packages. The simulation engine is pure, deterministic TypeScript with zero dependencies, so the browser can animate a run year by year while the server replays the exact same run from a seed.
 
-| Layer | Choice | Why |
-| --- | --- | --- |
-| Monorepo | pnpm workspaces | One install, shared types across packages |
-| Engine | `packages/engine`, plain TypeScript, no dependencies | Runs in browser, Node, and a Web Worker unchanged |
-| Front end | `apps/web`: React 18, Vite, TypeScript, CSS Modules | Fast dev loop; charts drawn on HTML canvas by hand |
-| Back end | `apps/api`: Node 20, Fastify, TypeScript, Zod validation | Small, fast, typed request schemas |
-| Database | PostgreSQL 16 via Drizzle ORM (SQLite allowed for local dev) | Stores saved runs and batch results |
-| Batch work | Node `worker_threads` pool inside the API | Monte Carlo runs without blocking requests |
-| Tests | Vitest (engine and API), Playwright (UI) | Same runner for unit and calibration tests |
-| Fonts | Schibsted Grotesk from Google Fonts, system-ui fallback | Matches the prototype |
+| Layer      | Choice                                                       | Why                                                |
+| ---------- | ------------------------------------------------------------ | -------------------------------------------------- |
+| Monorepo   | pnpm workspaces                                              | One install, shared types across packages          |
+| Engine     | `packages/engine`, plain TypeScript, no dependencies         | Runs in browser, Node, and a Web Worker unchanged  |
+| Front end  | `apps/web`: React 18, Vite, TypeScript, CSS Modules          | Fast dev loop; charts drawn on HTML canvas by hand |
+| Back end   | `apps/api`: Node 20, Fastify, TypeScript, Zod validation     | Small, fast, typed request schemas                 |
+| Database   | PostgreSQL 16 via Drizzle ORM (SQLite allowed for local dev) | Stores saved runs and batch results                |
+| Batch work | Node `worker_threads` pool inside the API                    | Monte Carlo runs without blocking requests         |
+| Tests      | Vitest (engine and API), Playwright (UI)                     | Same runner for unit and calibration tests         |
+| Fonts      | Schibsted Grotesk from Google Fonts, system-ui fallback      | Matches the prototype                              |
 
 Do not add a charting library. Every chart is drawn with the Canvas 2D API so the look matches the prototype exactly.
 
@@ -102,30 +102,30 @@ The order of random draws matters for reproducibility. Implement initialization 
 
 Store diseases as parallel typed arrays of length N for speed, not as objects.
 
-| Field | Type | Meaning |
-| --- | --- | --- |
-| type | Uint8 | Index into the six disease types |
-| fam | Uint8 | Global family index, 0 to 23 |
-| stage | Uint8 | 0 undiscovered, 1 research, 2 clinical trials, 3 global rollout, 4 eradicated |
-| kind | Uint8 | 0 known in 2026, 1 undiscovered pool, 2 pandemic reserve |
-| prog | Float64 | Research discoveries accumulated |
-| diff | Float64 | Discoveries needed to enter trials |
-| burden | Float64 | Healthy life years (DALYs) lost per year |
-| timer | Float64 | Years left in trials or rollout |
-| nameIdx | Int16 | Index into the named disease list, or -1 |
+| Field   | Type    | Meaning                                                                       |
+| ------- | ------- | ----------------------------------------------------------------------------- |
+| type    | Uint8   | Index into the six disease types                                              |
+| fam     | Uint8   | Global family index, 0 to 23                                                  |
+| stage   | Uint8   | 0 undiscovered, 1 research, 2 clinical trials, 3 global rollout, 4 eradicated |
+| kind    | Uint8   | 0 known in 2026, 1 undiscovered pool, 2 pandemic reserve                      |
+| prog    | Float64 | Research discoveries accumulated                                              |
+| diff    | Float64 | Discoveries needed to enter trials                                            |
+| burden  | Float64 | Healthy life years (DALYs) lost per year                                      |
+| timer   | Float64 | Years left in trials or rollout                                               |
+| nameIdx | Int16   | Index into the named disease list, or -1                                      |
 
 ### Disease types and families
 
 Total global burden is 2.5 billion DALYs per year. Each type gets a fixed share. Families are listed in order, and each has one platform technology used by spillover breakthroughs.
 
-| Index | Type | Known in 2026 | Pool share | Burden share | Median difficulty | Families (platform technology) |
-| --- | --- | --- | --- | --- | --- | --- |
-| 0 | Infectious | 2,500 | 0.10 | 0.25 | 7 | respiratory virus (a universal respiratory vaccine); hemorrhagic and arboviral (a broad-spectrum antiviral); bacterial (engineered phage therapy); parasitic (gene-drive vector control); fungal (an antifungal peptide platform); chronic viral (in-vivo viral excision) |
-| 1 | Genetic and rare | 8,000 | 0.80 | 0.03 | 9 | metabolic (in-vivo base editing); lysosomal storage (next-generation enzyme replacement); neuromuscular (an antisense oligo platform); inherited blood (one-shot gene editing); mitochondrial (mitochondrial gene therapy); skeletal and connective tissue (prime editing); ciliopathy and rare syndrome (programmable tRNA therapy) |
-| 2 | Chronic | 3,000 | 0 | 0.55 | 28 | cardiovascular (cardiometabolic gene silencing); solid tumor (personalized cancer vaccines); blood cancer (in-vivo CAR-T); metabolic and endocrine (beta-cell regeneration); chronic respiratory (lung tissue regeneration); kidney and liver (an organ-regeneration platform) |
-| 3 | Neuro and mental | 1,500 | 0 | 0.12 | 40 | neurodegenerative (a brain-shuttle delivery system); psychiatric (precision circuit neuromodulation); epilepsy and neurological (neural gene regulation) |
-| 4 | Autoimmune | 700 | 0 | 0.02 | 22 | autoimmune (immune-reset therapy) |
-| 5 | Other | 1,300 | 0.10 | 0.03 | 12 | eye, skin and musculoskeletal (regenerative tissue engineering) |
+| Index | Type             | Known in 2026 | Pool share | Burden share | Median difficulty | Families (platform technology)                                                                                                                                                                                                                                                                                                       |
+| ----- | ---------------- | ------------- | ---------- | ------------ | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 0     | Infectious       | 2,500         | 0.10       | 0.25         | 7                 | respiratory virus (a universal respiratory vaccine); hemorrhagic and arboviral (a broad-spectrum antiviral); bacterial (engineered phage therapy); parasitic (gene-drive vector control); fungal (an antifungal peptide platform); chronic viral (in-vivo viral excision)                                                            |
+| 1     | Genetic and rare | 8,000         | 0.80       | 0.03         | 9                 | metabolic (in-vivo base editing); lysosomal storage (next-generation enzyme replacement); neuromuscular (an antisense oligo platform); inherited blood (one-shot gene editing); mitochondrial (mitochondrial gene therapy); skeletal and connective tissue (prime editing); ciliopathy and rare syndrome (programmable tRNA therapy) |
+| 2     | Chronic          | 3,000         | 0          | 0.55         | 28                | cardiovascular (cardiometabolic gene silencing); solid tumor (personalized cancer vaccines); blood cancer (in-vivo CAR-T); metabolic and endocrine (beta-cell regeneration); chronic respiratory (lung tissue regeneration); kidney and liver (an organ-regeneration platform)                                                       |
+| 3     | Neuro and mental | 1,500         | 0          | 0.12         | 40                | neurodegenerative (a brain-shuttle delivery system); psychiatric (precision circuit neuromodulation); epilepsy and neurological (neural gene regulation)                                                                                                                                                                             |
+| 4     | Autoimmune       | 700           | 0          | 0.02         | 22                | autoimmune (immune-reset therapy)                                                                                                                                                                                                                                                                                                    |
+| 5     | Other            | 1,300         | 0.10       | 0.03         | 12                | eye, skin and musculoskeletal (regenerative tissue engineering)                                                                                                                                                                                                                                                                      |
 
 Global family index = the sum of family counts of all earlier types plus the family's position within its type. There are 24 families.
 
@@ -133,41 +133,41 @@ Global family index = the sum of family counts of all earlier types plus the fam
 
 These 33 diseases are created first, in this order, at array indices 0 to 32. Their names appear in the event log. Burden is in millions of DALYs per year.
 
-| # | Name | Type | Family | Burden (M) | Difficulty |
-| --- | --- | --- | --- | --- | --- |
-| 0 | Ischemic heart disease | Chronic | cardiovascular | 190 | 60 |
-| 1 | Stroke | Chronic | cardiovascular | 160 | 60 |
-| 2 | COPD | Chronic | chronic respiratory | 80 | 50 |
-| 3 | Diabetes | Chronic | metabolic and endocrine | 75 | 45 |
-| 4 | Lung cancer | Chronic | solid tumor | 50 | 70 |
-| 5 | Chronic kidney disease | Chronic | kidney and liver | 45 | 45 |
-| 6 | Cirrhosis | Chronic | kidney and liver | 45 | 35 |
-| 7 | Colorectal cancer | Chronic | solid tumor | 25 | 50 |
-| 8 | Breast cancer | Chronic | solid tumor | 20 | 45 |
-| 9 | Stomach cancer | Chronic | solid tumor | 22 | 50 |
-| 10 | Liver cancer | Chronic | solid tumor | 16 | 60 |
-| 11 | Asthma | Chronic | chronic respiratory | 21 | 30 |
-| 12 | Leukemia | Chronic | blood cancer | 12 | 40 |
-| 13 | Pancreatic cancer | Chronic | solid tumor | 11 | 85 |
-| 14 | Lower respiratory infections | Infectious | respiratory virus | 100 | 20 |
-| 15 | Diarrheal diseases | Infectious | bacterial | 60 | 10 |
-| 16 | Tuberculosis | Infectious | bacterial | 45 | 20 |
-| 17 | HIV/AIDS | Infectious | chronic viral | 40 | 35 |
-| 18 | Malaria | Infectious | parasitic | 45 | 25 |
-| 19 | Dengue | Infectious | hemorrhagic and arboviral | 3 | 15 |
-| 20 | Measles | Infectious | respiratory virus | 4 | 5 |
-| 21 | Hepatitis B | Infectious | chronic viral | 10 | 18 |
-| 22 | Alzheimer's disease | Neuro and mental | neurodegenerative | 35 | 90 |
-| 23 | Depression | Neuro and mental | psychiatric | 55 | 60 |
-| 24 | Anxiety disorders | Neuro and mental | psychiatric | 45 | 55 |
-| 25 | Schizophrenia | Neuro and mental | psychiatric | 15 | 80 |
-| 26 | Parkinson's disease | Neuro and mental | neurodegenerative | 7 | 70 |
-| 27 | Epilepsy | Neuro and mental | epilepsy and neurological | 14 | 45 |
-| 28 | Multiple sclerosis | Neuro and mental | neurodegenerative | 2 | 50 |
-| 29 | Lupus | Autoimmune | autoimmune | 1 | 45 |
-| 30 | Rheumatoid arthritis | Autoimmune | autoimmune | 3.5 | 40 |
-| 31 | Sickle cell disease | Genetic and rare | inherited blood | 8 | 12 |
-| 32 | Cystic fibrosis | Genetic and rare | metabolic | 0.3 | 10 |
+| #   | Name                         | Type             | Family                    | Burden (M) | Difficulty |
+| --- | ---------------------------- | ---------------- | ------------------------- | ---------- | ---------- |
+| 0   | Ischemic heart disease       | Chronic          | cardiovascular            | 190        | 60         |
+| 1   | Stroke                       | Chronic          | cardiovascular            | 160        | 60         |
+| 2   | COPD                         | Chronic          | chronic respiratory       | 80         | 50         |
+| 3   | Diabetes                     | Chronic          | metabolic and endocrine   | 75         | 45         |
+| 4   | Lung cancer                  | Chronic          | solid tumor               | 50         | 70         |
+| 5   | Chronic kidney disease       | Chronic          | kidney and liver          | 45         | 45         |
+| 6   | Cirrhosis                    | Chronic          | kidney and liver          | 45         | 35         |
+| 7   | Colorectal cancer            | Chronic          | solid tumor               | 25         | 50         |
+| 8   | Breast cancer                | Chronic          | solid tumor               | 20         | 45         |
+| 9   | Stomach cancer               | Chronic          | solid tumor               | 22         | 50         |
+| 10  | Liver cancer                 | Chronic          | solid tumor               | 16         | 60         |
+| 11  | Asthma                       | Chronic          | chronic respiratory       | 21         | 30         |
+| 12  | Leukemia                     | Chronic          | blood cancer              | 12         | 40         |
+| 13  | Pancreatic cancer            | Chronic          | solid tumor               | 11         | 85         |
+| 14  | Lower respiratory infections | Infectious       | respiratory virus         | 100        | 20         |
+| 15  | Diarrheal diseases           | Infectious       | bacterial                 | 60         | 10         |
+| 16  | Tuberculosis                 | Infectious       | bacterial                 | 45         | 20         |
+| 17  | HIV/AIDS                     | Infectious       | chronic viral             | 40         | 35         |
+| 18  | Malaria                      | Infectious       | parasitic                 | 45         | 25         |
+| 19  | Dengue                       | Infectious       | hemorrhagic and arboviral | 3          | 15         |
+| 20  | Measles                      | Infectious       | respiratory virus         | 4          | 5          |
+| 21  | Hepatitis B                  | Infectious       | chronic viral             | 10         | 18         |
+| 22  | Alzheimer's disease          | Neuro and mental | neurodegenerative         | 35         | 90         |
+| 23  | Depression                   | Neuro and mental | psychiatric               | 55         | 60         |
+| 24  | Anxiety disorders            | Neuro and mental | psychiatric               | 45         | 55         |
+| 25  | Schizophrenia                | Neuro and mental | psychiatric               | 15         | 80         |
+| 26  | Parkinson's disease          | Neuro and mental | neurodegenerative         | 7          | 70         |
+| 27  | Epilepsy                     | Neuro and mental | epilepsy and neurological | 14         | 45         |
+| 28  | Multiple sclerosis           | Neuro and mental | neurodegenerative         | 2          | 50         |
+| 29  | Lupus                        | Autoimmune       | autoimmune                | 1          | 45         |
+| 30  | Rheumatoid arthritis         | Autoimmune       | autoimmune                | 3.5        | 40         |
+| 31  | Sickle cell disease          | Genetic and rare | inherited blood           | 8          | 12         |
+| 32  | Cystic fibrosis              | Genetic and rare | metabolic                 | 0.3        | 10         |
 
 All named diseases start at stage 1 with kind 0.
 
@@ -254,12 +254,12 @@ The displayed "Discoveries per year" is D + D_aging.
 
 Only stage 1 diseases receive research. Weights depend on the research priority setting.
 
-| Priority | Exponent γ | Type multipliers (types 0 to 5) | Effective discoveries D_d |
-| --- | --- | --- | --- |
-| Biggest killers first (default) | 0.8 / (1 + 0.4 max(0, P)) | 1, 1, 1, 1, 1, 1 | D |
-| Neglected and rare | 0 | 1, 4, 0.6, 0.6, 2, 2 | D |
-| Platform technology | 0.5 / (1 + max(0, P)) | 1, 1, 1, 1, 1, 1 | 0.7D |
-| Aging first | 0.5 / (1 + max(0, P)) | 1, 1, 1, 1, 1, 1 | D |
+| Priority                        | Exponent γ                | Type multipliers (types 0 to 5) | Effective discoveries D_d |
+| ------------------------------- | ------------------------- | ------------------------------- | ------------------------- |
+| Biggest killers first (default) | 0.8 / (1 + 0.4 max(0, P)) | 1, 1, 1, 1, 1, 1                | D                         |
+| Neglected and rare              | 0                         | 1, 4, 0.6, 0.6, 2, 2            | D                         |
+| Platform technology             | 0.5 / (1 + max(0, P))     | 1, 1, 1, 1, 1, 1                | 0.7D                      |
+| Aging first                     | 0.5 / (1 + max(0, P))     | 1, 1, 1, 1, 1, 1                | D                         |
 
 ```latex
 W_i = (\text{burden}_i + 1)^{\gamma} \cdot \text{typeMult}_{type_i}, \qquad W = \sum_{stage_i = 1} W_i
@@ -336,28 +336,28 @@ Once there are at least 3 records, compare 3-year averages of the last three rec
 
 Every parameter below is a field of `Params`, is editable in the Settings panel, and is validated with the same ranges on the server. Changes apply to the running simulation immediately, except `pool` and `seed`, which apply on the next run.
 
-| Group | Key | Settings label | Default | Range, step | Display format | Hint shown under the control |
-| --- | --- | --- | --- | --- | --- | --- |
-| AI progress | g0 | Model improvement rate | 35 | 5 to 150, 1 | "35% per year" | How much AI research capability improves each year. |
-| AI progress | acc | Acceleration | 1 | 0 to 20, 0.5 | "1% per year" | How fast the improvement rate itself speeds up, such as AI helping build better AI. |
-| AI progress | growth | Growth shape (radio) | exp | exp, waves | Exponential / Exponential with plateaus | none |
-| AI progress | ceiling | First plateau (slider stores log10) | 100 | 10^1 to 10^6, 0.5 in log10 | "100× today" | Where AI first stalls when plateaus are on. Each later plateau hits somewhere 10 to 100 times higher. |
-| AI progress | plen | Typical plateau length | 5 | 1 to 20, 1 | "5 years" | Each plateau lasts between half and one and a half times this long. |
-| AI progress | aiBase | AI discoveries in 2026 | 20 | 5 to 200, 5 | "20 per year" | none |
-| AI progress | human | Human baseline discoveries | 50 | 10 to 200, 5 | "50 per year" | Close to today's roughly 50 new drug approvals a year in the US. |
-| Regulation | reg0 | Starting climate | 50 | 0 to 100, 1 | "Moderate, 50" (below 25 Laissez-faire, above 75 Strict) | Strict rules can cut AI growth to about a third and slow trial reform, but prevent safety scares. Hands-off rules speed both up by as much as a quarter. |
-| Regulation | vol | Political volatility | 50 | 0 to 100, 1 | "50%" | How much regulation swings on its own from year to year. |
-| Diseases | newBase | New diseases found in 2026 | 200 | 0 to 1,000, 10 | "200 per year" | none |
-| Diseases | beta | AI boost to finding diseases | 35 | 0 to 100, 1 | "0.35" | Detection grows with AI capability raised to this power. 0 means no boost, 1 means it keeps pace with AI. |
-| Diseases | pool | Undiscovered diseases out there | 25,000 | 5,000 to 100,000, 1,000 | "25,000" | Applies on your next new run. |
-| Diseases | priority | Research priority (select) | killers | killers, rare, platforms, aging | Biggest killers first / Neglected and rare / Platform technology / Aging first | none |
-| Diseases | res | Resistance chance | 4 | 0 to 20, 0.5 | "4% per year" | Chance an infectious disease adapts during rollout and sends researchers back to the lab. |
-| Events | spill | Platform breakthroughs | 100 | 0 to 200, 5 | "100% of normal" | One technology advancing a whole disease family at once. |
-| Events | pand | Pandemic chance | 3 | 0 to 20, 0.5 | "3% per year" | none |
-| Events | surprise | Surprise breakthroughs | 100 | 0 to 200, 5 | "100% of normal" | none |
-| Aging and ending | aging | AI effort on aging itself | 10 | 0 to 50, 1 | "10% of AI research" | Needed for longevity escape velocity. Curing diseases alone caps life expectancy near 90. |
-| Aging and ending | endAtCross | Stop at the crossover (checkbox) | true | boolean | checkbox | none |
-| Aging and ending | seed | Run seed (number input) | 0 | integer ≥ 0 | number | 0 picks a random run. Reuse a number to replay the same luck. Applies on your next new run. |
+| Group            | Key        | Settings label                      | Default | Range, step                     | Display format                                                                 | Hint shown under the control                                                                                                                             |
+| ---------------- | ---------- | ----------------------------------- | ------- | ------------------------------- | ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| AI progress      | g0         | Model improvement rate              | 35      | 5 to 150, 1                     | "35% per year"                                                                 | How much AI research capability improves each year.                                                                                                      |
+| AI progress      | acc        | Acceleration                        | 1       | 0 to 20, 0.5                    | "1% per year"                                                                  | How fast the improvement rate itself speeds up, such as AI helping build better AI.                                                                      |
+| AI progress      | growth     | Growth shape (radio)                | exp     | exp, waves                      | Exponential / Exponential with plateaus                                        | none                                                                                                                                                     |
+| AI progress      | ceiling    | First plateau (slider stores log10) | 100     | 10^1 to 10^6, 0.5 in log10      | "100× today"                                                                   | Where AI first stalls when plateaus are on. Each later plateau hits somewhere 10 to 100 times higher.                                                    |
+| AI progress      | plen       | Typical plateau length              | 5       | 1 to 20, 1                      | "5 years"                                                                      | Each plateau lasts between half and one and a half times this long.                                                                                      |
+| AI progress      | aiBase     | AI discoveries in 2026              | 20      | 5 to 200, 5                     | "20 per year"                                                                  | none                                                                                                                                                     |
+| AI progress      | human      | Human baseline discoveries          | 50      | 10 to 200, 5                    | "50 per year"                                                                  | Close to today's roughly 50 new drug approvals a year in the US.                                                                                         |
+| Regulation       | reg0       | Starting climate                    | 50      | 0 to 100, 1                     | "Moderate, 50" (below 25 Laissez-faire, above 75 Strict)                       | Strict rules can cut AI growth to about a third and slow trial reform, but prevent safety scares. Hands-off rules speed both up by as much as a quarter. |
+| Regulation       | vol        | Political volatility                | 50      | 0 to 100, 1                     | "50%"                                                                          | How much regulation swings on its own from year to year.                                                                                                 |
+| Diseases         | newBase    | New diseases found in 2026          | 200     | 0 to 1,000, 10                  | "200 per year"                                                                 | none                                                                                                                                                     |
+| Diseases         | beta       | AI boost to finding diseases        | 35      | 0 to 100, 1                     | "0.35"                                                                         | Detection grows with AI capability raised to this power. 0 means no boost, 1 means it keeps pace with AI.                                                |
+| Diseases         | pool       | Undiscovered diseases out there     | 25,000  | 5,000 to 100,000, 1,000         | "25,000"                                                                       | Applies on your next new run.                                                                                                                            |
+| Diseases         | priority   | Research priority (select)          | killers | killers, rare, platforms, aging | Biggest killers first / Neglected and rare / Platform technology / Aging first | none                                                                                                                                                     |
+| Diseases         | res        | Resistance chance                   | 4       | 0 to 20, 0.5                    | "4% per year"                                                                  | Chance an infectious disease adapts during rollout and sends researchers back to the lab.                                                                |
+| Events           | spill      | Platform breakthroughs              | 100     | 0 to 200, 5                     | "100% of normal"                                                               | One technology advancing a whole disease family at once.                                                                                                 |
+| Events           | pand       | Pandemic chance                     | 3       | 0 to 20, 0.5                    | "3% per year"                                                                  | none                                                                                                                                                     |
+| Events           | surprise   | Surprise breakthroughs              | 100     | 0 to 200, 5                     | "100% of normal"                                                               | none                                                                                                                                                     |
+| Aging and ending | aging      | AI effort on aging itself           | 10      | 0 to 50, 1                      | "10% of AI research"                                                           | Needed for longevity escape velocity. Curing diseases alone caps life expectancy near 90.                                                                |
+| Aging and ending | endAtCross | Stop at the crossover (checkbox)    | true    | boolean                         | checkbox                                                                       | none                                                                                                                                                     |
+| Aging and ending | seed       | Run seed (number input)             | 0       | integer ≥ 0                     | number                                                                         | 0 picks a random run. Reuse a number to replay the same luck. Applies on your next new run.                                                              |
 
 Fixed constants that are not user-editable: total burden 2.5 billion DALYs per year, baseline life expectancy 73.3 years, disease-only life expectancy ceiling 73.3 + 16.7 = 90 years, 150 pandemic reserve slots, start year 2026, end year 2300, and an event log capped at 60 entries.
 
@@ -417,19 +417,19 @@ Hint under the graph, muted 0.8rem: "Each line is scaled to its own range. Shade
 
 Eleven toggle buttons in a 2-column grid (3 columns from 620px), 6px gaps. Each card: a 10px round dot, the name in 0.74rem, and the value below in bold 0.92rem tabular numerals. When on, the dot is filled and the border takes the variable color. When off, the dot is an outline ring and the value is at 70% opacity. Each button uses `aria-pressed`.
 
-| Order | Record key | Name | Color token | Scale | Fixed bounds | Value format | On by default |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | C | AI capability | --v1 | log | none | "22 thousand×" (one decimal below 10) | yes |
-| 2 | reg | Regulation | --v2 | linear | 0 to 1 | "52/100" | yes |
-| 3 | rem | Diseases remaining | --v3 | linear | lo 0 | "33,057" | yes |
-| 4 | eradCum | Eradicated | --v4 | linear | lo 0 | "6,630" | yes |
-| 5 | LE | Life expectancy | --v6 | linear | lo 73 | "100.1 yrs" | yes |
-| 6 | newF | New diseases per year | --v5 | linear | lo 0 | "836" | no |
-| 7 | erad | Eradicated per year | --v9 | linear | lo 0 | "2,744" | no |
-| 8 | healthy | Healthy years gained | --v8 | linear | lo 0 | "21 billion" | no |
-| 9 | D | Discoveries per year | --v11 | log | none | "856 thousand" | no |
-| 10 | T | Trial length | --v7 | linear | lo 0 | "2.0 yrs" | no |
-| 11 | p | Trial success rate | --v10 | linear | 0 to 1 | "74%" | no |
+| Order | Record key | Name                  | Color token | Scale  | Fixed bounds | Value format                          | On by default |
+| ----- | ---------- | --------------------- | ----------- | ------ | ------------ | ------------------------------------- | ------------- |
+| 1     | C          | AI capability         | --v1        | log    | none         | "22 thousand×" (one decimal below 10) | yes           |
+| 2     | reg        | Regulation            | --v2        | linear | 0 to 1       | "52/100"                              | yes           |
+| 3     | rem        | Diseases remaining    | --v3        | linear | lo 0         | "33,057"                              | yes           |
+| 4     | eradCum    | Eradicated            | --v4        | linear | lo 0         | "6,630"                               | yes           |
+| 5     | LE         | Life expectancy       | --v6        | linear | lo 73        | "100.1 yrs"                           | yes           |
+| 6     | newF       | New diseases per year | --v5        | linear | lo 0         | "836"                                 | no            |
+| 7     | erad       | Eradicated per year   | --v9        | linear | lo 0         | "2,744"                               | no            |
+| 8     | healthy    | Healthy years gained  | --v8        | linear | lo 0         | "21 billion"                          | no            |
+| 9     | D          | Discoveries per year  | --v11       | log    | none         | "856 thousand"                        | no            |
+| 10    | T          | Trial length          | --v7        | linear | lo 0         | "2.0 yrs"                             | no            |
+| 11    | p          | Trial success rate    | --v10       | linear | 0 to 1       | "74%"                                 | no            |
 
 ### Controls
 
@@ -477,33 +477,33 @@ The look is a histology slide: a pale pink-violet background with stain-like pur
 
 ### Color tokens
 
-| Token | Light | Dark | Used for |
-| --- | --- | --- | --- |
-| --bg | #F7F2F5 | #16121C | Page background, option cards |
-| --panel | #FFFFFF | #1F1A27 | Charts, cards, stats cells, modals |
-| --ink | #2A1B3D | #F1EAF4 | Main text, primary button fill, cursor line |
-| --muted | #6E6078 | #A596AE | Secondary text, axis labels |
-| --line | #E3D8E2 | #342B3F | Borders and dividers |
-| --chartgrid | #EDE4EC | #2A2333 | Chart gridlines |
-| --accent | #5B3A8C | #B79BE6 | Focus rings, selected speed, legends, escape velocity |
-| --good | #1F8A6A | #6FD3A4 | Crossover, win events, eradicated line in the race chart |
-| --bad | #C2395F | #F0628F | Bad events |
-| --plat | #1F8A8A | #38B2AC | Platform events |
-| --surp | #B7791F | #F2B54A | Surprise and policy events |
-| --res-lo | #5B3A8C | #6D4BA3 | Strict end of the regulation meter |
-| --res-hi | #D6457A | #F0628F | New diseases line in the race chart |
-| --trial | #E0A030 | #F2B54A | Laissez-faire end of the regulation meter |
-| --v1 | #5B3A8C | #B79BE6 | AI capability, plateau bands |
-| --v2 | #B7791F | #F2B54A | Regulation |
-| --v3 | #C2395F | #F0628F | Diseases remaining |
-| --v4 | #1F8A6A | #6FD3A4 | Eradicated |
-| --v5 | #E07B39 | #F59A5B | New diseases per year |
-| --v6 | #2B7BB9 | #6FB4EE | Life expectancy |
-| --v7 | #8A5A44 | #D1A68C | Trial length |
-| --v8 | #9B3FB5 | #D38BEB | Healthy years gained |
-| --v9 | #4F7A28 | #A6D66A | Eradicated per year |
-| --v10 | #D14F9E | #F28CCB | Trial success rate |
-| --v11 | #3E6E8E | #8FC1DD | Discoveries per year |
+| Token       | Light   | Dark    | Used for                                                 |
+| ----------- | ------- | ------- | -------------------------------------------------------- |
+| --bg        | #F7F2F5 | #16121C | Page background, option cards                            |
+| --panel     | #FFFFFF | #1F1A27 | Charts, cards, stats cells, modals                       |
+| --ink       | #2A1B3D | #F1EAF4 | Main text, primary button fill, cursor line              |
+| --muted     | #6E6078 | #A596AE | Secondary text, axis labels                              |
+| --line      | #E3D8E2 | #342B3F | Borders and dividers                                     |
+| --chartgrid | #EDE4EC | #2A2333 | Chart gridlines                                          |
+| --accent    | #5B3A8C | #B79BE6 | Focus rings, selected speed, legends, escape velocity    |
+| --good      | #1F8A6A | #6FD3A4 | Crossover, win events, eradicated line in the race chart |
+| --bad       | #C2395F | #F0628F | Bad events                                               |
+| --plat      | #1F8A8A | #38B2AC | Platform events                                          |
+| --surp      | #B7791F | #F2B54A | Surprise and policy events                               |
+| --res-lo    | #5B3A8C | #6D4BA3 | Strict end of the regulation meter                       |
+| --res-hi    | #D6457A | #F0628F | New diseases line in the race chart                      |
+| --trial     | #E0A030 | #F2B54A | Laissez-faire end of the regulation meter                |
+| --v1        | #5B3A8C | #B79BE6 | AI capability, plateau bands                             |
+| --v2        | #B7791F | #F2B54A | Regulation                                               |
+| --v3        | #C2395F | #F0628F | Diseases remaining                                       |
+| --v4        | #1F8A6A | #6FD3A4 | Eradicated                                               |
+| --v5        | #E07B39 | #F59A5B | New diseases per year                                    |
+| --v6        | #2B7BB9 | #6FB4EE | Life expectancy                                          |
+| --v7        | #8A5A44 | #D1A68C | Trial length                                             |
+| --v8        | #9B3FB5 | #D38BEB | Healthy years gained                                     |
+| --v9        | #4F7A28 | #A6D66A | Eradicated per year                                      |
+| --v10       | #D14F9E | #F28CCB | Trial success rate                                       |
+| --v11       | #3E6E8E | #8FC1DD | Discoveries per year                                     |
 
 Theme rules: apply the dark values under `@media (prefers-color-scheme: dark)` guarded by `:root:not([data-theme="light"])`, and again under `:root[data-theme="dark"]`, so a future theme toggle can force either mode. Give `body` an explicit background.
 
@@ -542,15 +542,15 @@ The server never trusts results from the browser. Clients send only `params` and
 
 All routes live under `/api`, accept and return JSON, and validate bodies with Zod schemas generated from the Section 5 ranges.
 
-| Method | Path | Body or query | Returns |
-| --- | --- | --- | --- |
-| GET | /api/health | none | `{ ok: true, engineVersion }` |
-| GET | /api/params | none | Defaults, ranges, steps, labels, and hints from Section 5, so the Settings panel is built from one source |
-| POST | /api/runs | `{ params, seed }` (seed ≥ 1) | 201 `{ id, shareUrl, summary }` |
-| GET | /api/runs/:id | none | `{ id, params, seed, engineVersion, summary, createdAt }` |
-| GET | /api/runs | `?limit=20` (max 100) | Recent runs, newest first, summaries only |
-| POST | /api/batch | `{ params, count, startSeed? }`, count 1 to 1,000 | 202 `{ jobId }` |
-| GET | /api/batch/:jobId | none | `{ status, progress, result? , error? }` |
+| Method | Path              | Body or query                                     | Returns                                                                                                   |
+| ------ | ----------------- | ------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| GET    | /api/health       | none                                              | `{ ok: true, engineVersion }`                                                                             |
+| GET    | /api/params       | none                                              | Defaults, ranges, steps, labels, and hints from Section 5, so the Settings panel is built from one source |
+| POST   | /api/runs         | `{ params, seed }` (seed ≥ 1)                     | 201 `{ id, shareUrl, summary }`                                                                           |
+| GET    | /api/runs/:id     | none                                              | `{ id, params, seed, engineVersion, summary, createdAt }`                                                 |
+| GET    | /api/runs         | `?limit=20` (max 100)                             | Recent runs, newest first, summaries only                                                                 |
+| POST   | /api/batch        | `{ params, count, startSeed? }`, count 1 to 1,000 | 202 `{ jobId }`                                                                                           |
+| GET    | /api/batch/:jobId | none                                              | `{ status, progress, result? , error? }`                                                                  |
 
 `RunSummary`: seed, outcome ("crossover", "full", or "timeout"), endYear, crossYear, levYear, fullYear, eradicated, remaining, healthyYears, lifeExpectancy, pandemics, platforms, safetyScares, resistanceEvents, plateauCount, and finalCapability.
 
@@ -560,10 +560,10 @@ Batch `result`: count, crossover year percentiles (p10, p25, p50, p75, p90), a c
 
 Use PostgreSQL with Drizzle migrations. Store params as JSON so new parameters need no migration.
 
-| Table | Columns |
-| --- | --- |
-| runs | id (text, 10-char nanoid, primary key), created_at (timestamptz), engine_version (text), seed (integer), params (jsonb), summary (jsonb), cross_year (integer, nullable, indexed), lev_year (integer, nullable), full_year (integer, nullable) |
-| batch_jobs | id (text primary key), created_at (timestamptz), status (queued, running, done, failed), params (jsonb), count (integer), start_seed (integer), progress (integer), result (jsonb, nullable), error (text, nullable) |
+| Table      | Columns                                                                                                                                                                                                                                        |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| runs       | id (text, 10-char nanoid, primary key), created_at (timestamptz), engine_version (text), seed (integer), params (jsonb), summary (jsonb), cross_year (integer, nullable, indexed), lev_year (integer, nullable), full_year (integer, nullable) |
+| batch_jobs | id (text primary key), created_at (timestamptz), status (queued, running, done, failed), params (jsonb), count (integer), start_seed (integer), progress (integer), result (jsonb, nullable), error (text, nullable)                           |
 
 ### Batch execution
 
@@ -592,30 +592,30 @@ The engine is correct when it reproduces the prototype's golden run exactly and 
 
 With default params and seed 12345:
 
-| Check | Expected value |
-| --- | --- |
-| Total diseases N | 42,150 |
-| Stage counts right after init (stages 0 to 4) | 25,150 · 16,383 · 517 · 100 · 0 |
-| Crossover year | 2054 |
-| Escape velocity year | 2051 |
-| Eradicated at end | 6,092 |
-| Remaining (stages 1 to 3) at end | 33,942 |
-| Healthy years gained, rounded | 22,594,795,676 |
-| Life expectancy at end | 99.539 years (3 decimals) |
-| Pandemics · platform breakthroughs · safety scares | 5 · 3 · 5 |
+| Check                                              | Expected value                  |
+| -------------------------------------------------- | ------------------------------- |
+| Total diseases N                                   | 42,150                          |
+| Stage counts right after init (stages 0 to 4)      | 25,150 · 16,383 · 517 · 100 · 0 |
+| Crossover year                                     | 2054                            |
+| Escape velocity year                               | 2051                            |
+| Eradicated at end                                  | 6,092                           |
+| Remaining (stages 1 to 3) at end                   | 33,942                          |
+| Healthy years gained, rounded                      | 22,594,795,676                  |
+| Life expectancy at end                             | 99.539 years (3 decimals)       |
+| Pandemics · platform breakthroughs · safety scares | 5 · 3 · 5                       |
 
 If the init counts match but later values drift, a random draw is happening in the wrong order. Re-check Section 4 step by step, especially the pipeline loop, the `continue` after resistance, and when log calls consume no randomness.
 
 ### Calibration ranges (seeds 1 to 20)
 
-| Scenario (change from defaults) | Crossover p10 / median / p90 | Runs reaching escape velocity | Median escape velocity year | Median eradicated | Median healthy years |
-| --- | --- | --- | --- | --- | --- |
-| Exponential (defaults) | 2052 / 2054 / 2056 | 100% | 2052 | 5,377 | 20.6 billion |
-| Exponential with plateaus | 2057 / 2059 / 2060 | 35% | 2058 | 4,244 | 26.9 billion |
-| Strict starting climate (reg0 90) | 2060 / 2064 / 2068 | 100% | 2063 | 4,121 | 22.7 billion |
-| Hands-off starting climate (reg0 10) | 2050 / 2052 / 2053 | 100% | 2050 | 6,493 | 19.2 billion |
-| Neglected and rare priority | 2050 / 2053 / 2055 | 85% | 2053 | 5,506 | 1.8 billion |
-| Aging first (aging 35) | 2052 / 2054 / 2057 | 100% | 2049 | 5,221 | 9.8 billion |
+| Scenario (change from defaults)      | Crossover p10 / median / p90 | Runs reaching escape velocity | Median escape velocity year | Median eradicated | Median healthy years |
+| ------------------------------------ | ---------------------------- | ----------------------------- | --------------------------- | ----------------- | -------------------- |
+| Exponential (defaults)               | 2052 / 2054 / 2056           | 100%                          | 2052                        | 5,377             | 20.6 billion         |
+| Exponential with plateaus            | 2057 / 2059 / 2060           | 35%                           | 2058                        | 4,244             | 26.9 billion         |
+| Strict starting climate (reg0 90)    | 2060 / 2064 / 2068           | 100%                          | 2063                        | 4,121             | 22.7 billion         |
+| Hands-off starting climate (reg0 10) | 2050 / 2052 / 2053           | 100%                          | 2050                        | 6,493             | 19.2 billion         |
+| Neglected and rare priority          | 2050 / 2053 / 2055           | 85%                           | 2053                        | 5,506             | 1.8 billion          |
+| Aging first (aging 35)               | 2052 / 2054 / 2057           | 100%                          | 2049                        | 5,221             | 9.8 billion          |
 
 An exact implementation matches these values. If a deliberate change moves any median by more than 2 years, bump `ENGINE_VERSION` and update this table.
 
@@ -648,17 +648,17 @@ An exact implementation matches these values. If a deliberate change moves any m
 
 Build in nine milestones, engine first, and do not start a milestone until the previous one's checks pass. The engine milestone matters most: every later screen depends on it being exact.
 
-| # | Milestone | Deliverables | Done when |
-| --- | --- | --- | --- |
-| 0 | Scaffold | pnpm monorepo with `packages/engine`, `apps/web`, `apps/api`; TypeScript strict mode; ESLint and Prettier; Vitest and Playwright configured; `pnpm dev` runs web and API together | Empty app loads at localhost; API health route answers |
-| 1 | Engine | rng, catalog, params, init, step, metrics, format, `runToEnd`, `summarize`, `ENGINE_VERSION` | Golden run matches exactly; calibration table passes; one run under 150 ms |
-| 2 | App shell | tokens.css with both themes, header, controls, speed control, animation loop hook, setup modal | Choosing a growth shape and pressing Start run animates the year counter |
-| 3 | Main graph and cards | Canvas graph with normalization, plateau bands, markers, cursor; 11 variable cards | Toggling cards and scrubbing the graph work on phone and desktop |
-| 4 | Stats, charts, log, panels | Stats grid and regulation meter, race chart, longevity chart, event log, Settings built from `/api/params`, How the model works | Every panel updates each year; Settings changes apply live |
-| 5 | Results modal | Three outcome variants, stats list, close button and Escape, Keep going, New run | UI tests for the end of a run pass |
-| 6 | Save and share | Database schema and migrations, POST and GET runs, share button, `/run/:id` replay page, version warning | A shared link replays the same crossover year in a fresh browser |
-| 7 | Batch and Explore | Worker pool, job queue, batch routes, `/explore` page with histogram and percentiles | 200 default runs report a median crossover of 2054 |
-| 8 | Polish and ship | Accessibility pass, reduced motion, performance budgets, Dockerfile per app, docker-compose with Postgres, README | Acceptance checklist in Section 9 is fully ticked |
+| #   | Milestone                  | Deliverables                                                                                                                                                                      | Done when                                                                  |
+| --- | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| 0   | Scaffold                   | pnpm monorepo with `packages/engine`, `apps/web`, `apps/api`; TypeScript strict mode; ESLint and Prettier; Vitest and Playwright configured; `pnpm dev` runs web and API together | Empty app loads at localhost; API health route answers                     |
+| 1   | Engine                     | rng, catalog, params, init, step, metrics, format, `runToEnd`, `summarize`, `ENGINE_VERSION`                                                                                      | Golden run matches exactly; calibration table passes; one run under 150 ms |
+| 2   | App shell                  | tokens.css with both themes, header, controls, speed control, animation loop hook, setup modal                                                                                    | Choosing a growth shape and pressing Start run animates the year counter   |
+| 3   | Main graph and cards       | Canvas graph with normalization, plateau bands, markers, cursor; 11 variable cards                                                                                                | Toggling cards and scrubbing the graph work on phone and desktop           |
+| 4   | Stats, charts, log, panels | Stats grid and regulation meter, race chart, longevity chart, event log, Settings built from `/api/params`, How the model works                                                   | Every panel updates each year; Settings changes apply live                 |
+| 5   | Results modal              | Three outcome variants, stats list, close button and Escape, Keep going, New run                                                                                                  | UI tests for the end of a run pass                                         |
+| 6   | Save and share             | Database schema and migrations, POST and GET runs, share button, `/run/:id` replay page, version warning                                                                          | A shared link replays the same crossover year in a fresh browser           |
+| 7   | Batch and Explore          | Worker pool, job queue, batch routes, `/explore` page with histogram and percentiles                                                                                              | 200 default runs report a median crossover of 2054                         |
+| 8   | Polish and ship            | Accessibility pass, reduced motion, performance budgets, Dockerfile per app, docker-compose with Postgres, README                                                                 | Acceptance checklist in Section 9 is fully ticked                          |
 
 ### Rules for the agent
 

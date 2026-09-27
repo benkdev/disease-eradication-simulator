@@ -28,6 +28,15 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Run Type Check
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Check code formatting
+        run: pnpm format:check
+
       - name: Run Engine unit tests
         run: pnpm test:engine
 

@@ -2,7 +2,9 @@ import { test, expect } from '@playwright/test';
 import { SimulatorPage } from './pages/SimulatorPage.js';
 
 test.describe('Journey 2: Deep Longevity Horizon (Crossover -> Keep Going -> Full Eradication)', () => {
-  test('extends simulation past crossover to full eradication and ~500-year longevity', async ({ page }) => {
+  test('extends simulation past crossover to full eradication and ~500-year longevity', async ({
+    page,
+  }) => {
     const sim = new SimulatorPage(page);
 
     // 1. Start simulation at 10x speed to reach crossover rapidly

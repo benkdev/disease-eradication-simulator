@@ -67,7 +67,7 @@ export function ResultsModal({
       aria-labelledby="results-title"
       aria-describedby="results-summary-text"
       data-testid="results-modal"
-      onClick={e => {
+      onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
@@ -83,7 +83,11 @@ export function ResultsModal({
         </button>
 
         <div style={{ paddingTop: 32 }}>
-          <h2 id="results-title" data-testid="results-title" style={{ fontSize: '1.5rem', fontWeight: 700 }}>
+          <h2
+            id="results-title"
+            data-testid="results-title"
+            style={{ fontSize: '1.5rem', fontWeight: 700 }}
+          >
             {title}
           </h2>
           <div
@@ -99,7 +103,10 @@ export function ResultsModal({
           >
             {endYear}
           </div>
-          <p id="results-summary-text" style={{ color: 'var(--muted)', fontSize: '0.85rem', marginBottom: 16 }}>
+          <p
+            id="results-summary-text"
+            style={{ color: 'var(--muted)', fontSize: '0.85rem', marginBottom: 16 }}
+          >
             {summaryText} <em>{scenarioLabel}.</em>
           </p>
 
@@ -115,7 +122,13 @@ export function ResultsModal({
             {rows.map(([label, value]) => (
               <div key={label} style={{ display: 'contents' }}>
                 <dt style={{ color: 'var(--muted)' }}>{label}</dt>
-                <dd style={{ fontWeight: 600, textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
+                <dd
+                  style={{
+                    fontWeight: 600,
+                    textAlign: 'right',
+                    fontVariantNumeric: 'tabular-nums',
+                  }}
+                >
                   {value}
                 </dd>
               </div>
@@ -124,7 +137,9 @@ export function ResultsModal({
 
           {fullHist && fullHist.length > 0 && (
             <div style={{ marginBottom: 16 }}>
-              <div className="hint" style={{ fontSize: '0.8rem', marginBottom: 6 }}>Export Run Data</div>
+              <div className="hint" style={{ fontSize: '0.8rem', marginBottom: 6 }}>
+                Export Run Data
+              </div>
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                 <button
                   type="button"

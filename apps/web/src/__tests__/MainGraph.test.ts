@@ -9,7 +9,7 @@ describe('MainGraph line drawing and bounds', () => {
     const fullHist = res.hist;
     const bounds = seriesBounds(fullHist);
 
-    const leDef = VARIABLE_DEFS.find(d => d.key === 'LE')!;
+    const leDef = VARIABLE_DEFS.find((d) => d.key === 'LE')!;
     expect(leDef).toBeDefined();
 
     const lineBounds = getLineBounds(leDef, bounds);
@@ -19,7 +19,7 @@ describe('MainGraph line drawing and bounds', () => {
 
   it('draws the last point of every enabled monotonic line (AI capability, eradicated, life expectancy) at the top gridline for a completed run', () => {
     // Test across presets and seeds for completed runs
-    for (const growth of ['exp', 'plateaus'] as const) {
+    for (const growth of ['exp', 'waves'] as const) {
       for (const seed of [0, 1, 7]) {
         const res = simulate({ ...DEFAULTS, growth, seed });
         expect(res.done).toBe(true);
@@ -48,7 +48,7 @@ describe('MainGraph line drawing and bounds', () => {
         ] as const;
 
         for (const item of monotonicKeys) {
-          const def = VARIABLE_DEFS.find(d => d.key === item.key)!;
+          const def = VARIABLE_DEFS.find((d) => d.key === item.key)!;
           expect(def).toBeDefined();
           expect(def.defaultOn).toBe(true);
 
@@ -86,12 +86,10 @@ describe('MainGraph line drawing and bounds', () => {
 
     const monotonicKeys = new Set(['C', 'eradCum', 'LE']);
 
-    VARIABLE_DEFS.filter(d => d.defaultOn && monotonicKeys.has(d.key)).forEach(def => {
+    VARIABLE_DEFS.filter((d) => d.defaultOn && monotonicKeys.has(d.key)).forEach((def) => {
       const { lo, hi } = getLineBounds(def, bounds);
-      const vals = fullHist.map(r => r[def.key] as number);
-      const transformed = def.scale === 'log'
-        ? vals.map(v => Math.log10(Math.max(1, v)))
-        : vals;
+      const vals = fullHist.map((r) => r[def.key] as number);
+      const transformed = def.scale === 'log' ? vals.map((v) => Math.log10(Math.max(1, v))) : vals;
 
       const lastTransformed = transformed[transformed.length - 1];
       const yLast = computeLineY(lastTransformed, lo, hi, plotT, plotH);

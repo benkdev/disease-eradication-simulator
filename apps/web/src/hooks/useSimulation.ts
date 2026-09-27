@@ -8,9 +8,14 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   simulate,
   DEFAULTS,
-  type Params, type SimState, type RunSummary, type YearRecord, type EventEntry,
+  type Params,
+  type SimState,
+  type RunSummary,
+  type YearRecord,
+  type EventEntry,
   type SimResult,
 } from '../engine';
+import { paramsFromQueryString, syncParamsToUrl } from '../utils/urlState';
 
 export interface SimController {
   result: SimResult | null;
@@ -60,7 +65,11 @@ export function useSimulation(): SimController {
   const [scenarioLabel, setScenarioLabel] = useState('');
   const [replayingBanner, setReplayingBanner] = useState(false);
 
-  const paramsRef = useRef<Params>({ ...DEFAULTS });
+  const paramsRef = useRef<Params>(
+    typeof window !== 'undefined' && window.location.search
+      ? paramsFromQueryString(window.location.search)
+      : { ...DEFAULTS }
+  );
   const resultRef = useRef<SimResult | null>(null);
   const currentYearRef = useRef<number>(2026);
   const playingRef = useRef(false);
@@ -71,10 +80,18 @@ export function useSimulation(): SimController {
   const rafRef = useRef<number>(0);
 
   // Keep refs in sync
-  useEffect(() => { playingRef.current = playing; }, [playing]);
-  useEffect(() => { speedRef.current = speed; }, [speed]);
-  useEffect(() => { doneRef.current = done; }, [done]);
-  useEffect(() => { currentYearRef.current = currentYear; }, [currentYear]);
+  useEffect(() => {
+    playingRef.current = playing;
+  }, [playing]);
+  useEffect(() => {
+    speedRef.current = speed;
+  }, [speed]);
+  useEffect(() => {
+    doneRef.current = done;
+  }, [done]);
+  useEffect(() => {
+    currentYearRef.current = currentYear;
+  }, [currentYear]);
 
   // Animation playback loop
   const animate = useCallback((time: number) => {
@@ -142,6 +159,7 @@ export function useSimulation(): SimController {
   const startRun = useCallback((growth: Params['growth']) => {
     paramsRef.current.growth = growth;
     paramsRef.current.endAtCross = true;
+    syncParamsToUrl(paramsRef.current);
     const res = simulate(paramsRef.current);
     resultRef.current = res;
     setResult(res);
@@ -164,7 +182,7 @@ export function useSimulation(): SimController {
 
   const togglePlay = useCallback(() => {
     if (doneRef.current) return;
-    setPlaying(p => {
+    setPlaying((p) => {
       const next = !p;
       playingRef.current = next;
       return next;
@@ -201,6 +219,8 @@ export function useSimulation(): SimController {
     setReplayingBanner(false);
     if (window.location.pathname.startsWith('/run/')) {
       window.history.pushState(null, '', '/');
+    } else if (window.location.search) {
+      window.history.replaceState(null, '', window.location.pathname);
     }
   }, []);
 
@@ -215,6 +235,7 @@ export function useSimulation(): SimController {
       ...resultRef.current.params,
       endAtCross: false,
     };
+    syncParamsToUrl(nextParams);
     const res = simulate(nextParams);
     resultRef.current = res;
     setResult(res);
@@ -233,6 +254,7 @@ export function useSimulation(): SimController {
   // Settings changes apply to the next run, not the run in progress
   const updateParam = useCallback(<K extends keyof Params>(key: K, value: Params[K]) => {
     paramsRef.current[key] = value;
+    syncParamsToUrl(paramsRef.current);
   }, []);
 
   // Replay shared run on /run/:id
@@ -242,8 +264,8 @@ export function useSimulation(): SimController {
       const id = path.replace('/run/', '').split('/')[0];
       if (id) {
         fetch(`/api/runs/${id}`)
-          .then(res => (res.ok ? res.json() : null))
-          .then(data => {
+          .then((res) => (res.ok ? res.json() : null))
+          .then((data) => {
             if (data && data.params) {
               paramsRef.current = { ...data.params };
               if (data.seed !== undefined) paramsRef.current.seed = data.seed;
@@ -267,7 +289,9 @@ export function useSimulation(): SimController {
               lastTimeRef.current = 0;
               accumRef.current = 0;
               setScenarioLabel(
-                paramsRef.current.growth === 'exp' ? 'Exponential AI growth' : 'Exponential AI growth with plateaus'
+                paramsRef.current.growth === 'exp'
+                  ? 'Exponential AI growth'
+                  : 'Exponential AI growth with plateaus'
               );
             }
           })
@@ -276,10 +300,23 @@ export function useSimulation(): SimController {
     }
   }, []);
 
+  // Load shared simulation from URL search params on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.search) {
+      const parsed = paramsFromQueryString(window.location.search);
+      paramsRef.current = parsed;
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has('growth') || urlParams.has('seed')) {
+        startRun(parsed.growth);
+      }
+    }
+  }, [startRun]);
+
   const fullHist = result?.hist ?? [];
   const finalYear = result?.year ?? 2026;
-  const currentRec = fullHist.find(r => r.y === currentYear) ?? (fullHist.length > 0 ? fullHist[0] : null);
-  const cursorRec = cursorYear !== null ? fullHist.find(r => r.y === cursorYear) ?? null : null;
+  const currentRec =
+    fullHist.find((r) => r.y === currentYear) ?? (fullHist.length > 0 ? fullHist[0] : null);
+  const cursorRec = cursorYear !== null ? (fullHist.find((r) => r.y === cursorYear) ?? null) : null;
   const displayRec = cursorRec ?? currentRec;
   const eventsAll = result?.eventsAll ?? [];
   const plateaus = result?.plateaus ?? [];

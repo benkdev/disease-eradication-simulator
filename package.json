@@ -9,13 +9,23 @@
     "test:web": "pnpm --filter @tld/web test",
     "test:unit": "pnpm test:engine && pnpm test:web",
     "test:e2e": "pnpm --filter @tld/web test:e2e",
+    "typecheck": "pnpm -r run typecheck",
     "allure:generate": "pnpm --filter @tld/web allure:generate",
     "allure:open": "pnpm --filter @tld/web allure:open",
     "build": "pnpm -r build",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format:check": "prettier --check .",
+    "format": "prettier --write .",
     "deploy": "powershell -ExecutionPolicy Bypass -File infra/deploy.ps1"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "concurrently": "^9.1.0",
-    "typescript": "^5.6.0"
+    "eslint": "^10.11.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.9.9",
+    "typescript": "^5.6.0",
+    "typescript-eslint": "^8.70.1"
   }
 }

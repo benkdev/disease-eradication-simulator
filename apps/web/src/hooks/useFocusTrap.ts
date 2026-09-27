@@ -11,7 +11,7 @@ const FOCUSABLE_SELECTOR =
 export function useFocusTrap(
   containerRef: React.RefObject<HTMLElement | null>,
   isActive: boolean,
-  onEscape?: () => void,
+  onEscape?: () => void
 ) {
   const previousActiveElementRef = useRef<HTMLElement | null>(null);
 
@@ -69,7 +69,10 @@ export function useFocusTrap(
 
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
-      if (previousActiveElementRef.current && typeof previousActiveElementRef.current.focus === 'function') {
+      if (
+        previousActiveElementRef.current &&
+        typeof previousActiveElementRef.current.focus === 'function'
+      ) {
         previousActiveElementRef.current.focus();
       }
     };

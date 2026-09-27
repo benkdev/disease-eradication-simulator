@@ -27,14 +27,18 @@ export function SetupModal({ getParams, onStart }: SetupModalProps) {
       const nextIdx = (PRESET_KEYS.indexOf(selected) + 1) % PRESET_KEYS.length;
       const nextKey = PRESET_KEYS[nextIdx];
       setSelected(nextKey);
-      const btn = cardRef.current?.querySelector<HTMLButtonElement>(`[data-testid="growth-preset-${nextKey}"]`);
+      const btn = cardRef.current?.querySelector<HTMLButtonElement>(
+        `[data-testid="growth-preset-${nextKey}"]`
+      );
       btn?.focus();
     } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
       e.preventDefault();
       const prevIdx = (PRESET_KEYS.indexOf(selected) - 1 + PRESET_KEYS.length) % PRESET_KEYS.length;
       const prevKey = PRESET_KEYS[prevIdx];
       setSelected(prevKey);
-      const btn = cardRef.current?.querySelector<HTMLButtonElement>(`[data-testid="growth-preset-${prevKey}"]`);
+      const btn = cardRef.current?.querySelector<HTMLButtonElement>(
+        `[data-testid="growth-preset-${prevKey}"]`
+      );
       btn?.focus();
     }
   };
@@ -62,7 +66,7 @@ export function SetupModal({ getParams, onStart }: SetupModalProps) {
           onKeyDown={handleKeyDownRadiogroup}
           style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 20 }}
         >
-          {PRESET_KEYS.map(key => {
+          {PRESET_KEYS.map((key) => {
             const preset = GROWTH_PRESETS[key];
             const isSelected = selected === key;
             return (

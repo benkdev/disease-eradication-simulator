@@ -19,7 +19,7 @@ describe('ErrorBoundary component', () => {
     const html = renderToString(
       <ErrorBoundary>
         <div data-testid="child-content">Simulation Running Smoothly</div>
-      </ErrorBoundary>,
+      </ErrorBoundary>
     );
 
     expect(html).toContain('Simulation Running Smoothly');

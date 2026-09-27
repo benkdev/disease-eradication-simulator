@@ -15,10 +15,7 @@ export interface LineBounds {
   hi: number;
 }
 
-export function getLineBounds(
-  def: VarDef,
-  bounds: SeriesBoundsMap
-): LineBounds {
+export function getLineBounds(def: VarDef, bounds: SeriesBoundsMap): LineBounds {
   const b = bounds[def.key];
   if (def.key === 'LE') {
     return {
@@ -80,7 +77,8 @@ export function MainGraph({
   const containerRef = useRef<HTMLDivElement>(null);
 
   const fullHist = propFullHist ?? hist ?? [];
-  const currentYear = propCurrentYear ?? (fullHist.length > 0 ? fullHist[fullHist.length - 1].y : 2026);
+  const currentYear =
+    propCurrentYear ?? (fullHist.length > 0 ? fullHist[fullHist.length - 1].y : 2026);
 
   const bounds = useMemo(() => seriesBounds(fullHist), [fullHist]);
 
@@ -118,7 +116,9 @@ export function MainGraph({
         if (isOn) activeVarIndices.push(idx);
       });
     } else {
-      VARIABLE_DEFS.forEach((d, i) => { if (d.defaultOn) activeVarIndices.push(i); });
+      VARIABLE_DEFS.forEach((d, i) => {
+        if (d.defaultOn) activeVarIndices.push(i);
+      });
     }
 
     // Top padding is fixed for the whole run based on precomputed markers so axes never shift
@@ -126,7 +126,9 @@ export function MainGraph({
     const hasRunMarkers = crossYear !== null || levYear !== null;
 
     // Padding
-    const padL = 8, padR = 12, padB = 26;
+    const padL = 8,
+      padR = 12,
+      padB = 26;
     const padT = hasRunBoth ? 44 : hasRunMarkers ? 28 : 16;
 
     const plotL = padL;
@@ -160,7 +162,11 @@ export function MainGraph({
     ctx.fillStyle = muted;
     ctx.font = '11px "Schibsted Grotesk", system-ui, sans-serif';
     ctx.textBaseline = 'top';
-    for (let y = Math.ceil(minYear / labelInterval) * labelInterval; y <= maxYear; y += labelInterval) {
+    for (
+      let y = Math.ceil(minYear / labelInterval) * labelInterval;
+      y <= maxYear;
+      y += labelInterval
+    ) {
       const x = xForYear(y);
       if (x > plotR - 30) {
         ctx.textAlign = 'right';
@@ -186,7 +192,7 @@ export function MainGraph({
     }
 
     // Draw each line only up to currentYear
-    const visibleHist = fullHist.filter(r => r.y <= currentYear);
+    const visibleHist = fullHist.filter((r) => r.y <= currentYear);
 
     for (const vi of activeVarIndices) {
       const def = VARIABLE_DEFS[vi];
@@ -198,10 +204,8 @@ export function MainGraph({
 
       if (visibleHist.length === 0) continue;
 
-      const vals = visibleHist.map(r => r[def.key] as number);
-      const transformed = def.scale === 'log'
-        ? vals.map(v => Math.log10(Math.max(1, v)))
-        : vals;
+      const vals = visibleHist.map((r) => r[def.key] as number);
+      const transformed = def.scale === 'log' ? vals.map((v) => Math.log10(Math.max(1, v))) : vals;
 
       ctx.strokeStyle = color;
       ctx.lineWidth = 2.3;
@@ -290,28 +294,59 @@ export function MainGraph({
   // Theme change observer
   useEffect(() => {
     const obs = new MutationObserver(draw);
-    obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'class'] });
+    obs.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme', 'class'],
+    });
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
     mq.addEventListener('change', draw);
-    return () => { obs.disconnect(); mq.removeEventListener('change', draw); };
+    return () => {
+      obs.disconnect();
+      mq.removeEventListener('change', draw);
+    };
   }, [draw]);
 
   // Cursor handling — scrub only years up to currentYear
-  const handlePointer = useCallback((e: React.PointerEvent) => {
-    const canvas = canvasRef.current;
-    if (!canvas || fullHist.length === 0) return;
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const padL = 8, padR = 12;
-    const plotW = rect.width - padL - padR;
-    const minYear = 2026;
-    const finalYear = fullHist[fullHist.length - 1].y;
-    const maxYear = Math.max(finalYear, 2046);
-    const frac = (x - padL) / plotW;
-    const year = Math.round(minYear + frac * (maxYear - minYear));
-    const clamped = Math.max(minYear, Math.min(currentYear, year));
-    onCursorChange(clamped);
-  }, [fullHist, currentYear, onCursorChange]);
+  const handlePointer = useCallback(
+    (e: React.PointerEvent) => {
+      const canvas = canvasRef.current;
+      if (!canvas || fullHist.length === 0) return;
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const padL = 8,
+        padR = 12;
+      const plotW = rect.width - padL - padR;
+      const minYear = 2026;
+      const finalYear = fullHist[fullHist.length - 1].y;
+      const maxYear = Math.max(finalYear, 2046);
+      const frac = (x - padL) / plotW;
+      const year = Math.round(minYear + frac * (maxYear - minYear));
+      const clamped = Math.max(minYear, Math.min(currentYear, year));
+      onCursorChange(clamped);
+    },
+    [fullHist, currentYear, onCursorChange]
+  );
+
+  const visibleHist = useMemo(
+    () => fullHist.filter((r) => r.y <= currentYear),
+    [fullHist, currentYear]
+  );
+  const latestRec = visibleHist.length > 0 ? visibleHist[visibleHist.length - 1] : null;
+
+  const milestones = useMemo(() => {
+    if (visibleHist.length === 0) return [];
+    const set = new Set<number>();
+    const startY = visibleHist[0].y;
+    const lastY = visibleHist[visibleHist.length - 1].y;
+    set.add(startY);
+    set.add(lastY);
+    if (crossYear && crossYear <= currentYear) set.add(crossYear);
+    if (levYear && levYear <= currentYear) set.add(levYear);
+    for (const r of visibleHist) {
+      if (r.y % 5 === 0) set.add(r.y);
+    }
+    return visibleHist.filter((r) => set.has(r.y));
+  }, [visibleHist, crossYear, levYear, currentYear]);
 
   return (
     <div
@@ -332,8 +367,47 @@ export function MainGraph({
         onPointerLeave={() => onCursorChange(null)}
         onPointerCancel={() => onCursorChange(null)}
       >
-        Dynamic multi-line chart displaying AI capability, regulation, diseases remaining, disease eradications, and life expectancy from 2026 onwards.
+        Dynamic multi-line chart displaying AI capability, regulation, diseases remaining, disease
+        eradications, and life expectancy from 2026 onwards.
       </canvas>
+
+      {/* Accessible screen-reader data summary and table for WCAG 2.1 AA */}
+      <div className="sr-only" aria-live="polite" data-testid="main-graph-sr-summary">
+        <h3>Simulation Timeline Data Summary</h3>
+        <p>
+          {`Current simulation year is ${currentYear}. `}
+          {latestRec
+            ? `AI capability is ${latestRec.C.toFixed(1)}x, life expectancy is ${latestRec.LE.toFixed(1)} years, and ${latestRec.erad} diseases have been eradicated.`
+            : ''}
+          {crossYear && currentYear >= crossYear ? ` Crossover was reached in ${crossYear}.` : ''}
+          {levYear && currentYear >= levYear
+            ? ` Longevity escape velocity was reached in ${levYear}.`
+            : ''}
+        </p>
+        <table>
+          <caption>Simulation milestone and decadal data points</caption>
+          <thead>
+            <tr>
+              <th scope="col">Year</th>
+              <th scope="col">AI Capability</th>
+              <th scope="col">Eradicated Diseases</th>
+              <th scope="col">Life Expectancy</th>
+              <th scope="col">Regulation</th>
+            </tr>
+          </thead>
+          <tbody>
+            {milestones.map((r) => (
+              <tr key={r.y}>
+                <th scope="row">{r.y}</th>
+                <td>{r.C?.toFixed(1) ?? '1.0'}x</td>
+                <td>{r.eradCum ?? r.erad ?? 0}</td>
+                <td>{r.LE?.toFixed(1) ?? '73.0'} yrs</td>
+                <td>{r.reg !== undefined ? (r.reg * 100).toFixed(0) : '50'}%</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

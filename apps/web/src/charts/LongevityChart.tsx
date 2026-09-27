@@ -18,12 +18,18 @@ function getCSS(name: string): string {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 }
 
-export function LongevityChart({ fullHist: propFullHist, currentYear: propCurrentYear, hist, levYear }: LongevityChartProps) {
+export function LongevityChart({
+  fullHist: propFullHist,
+  currentYear: propCurrentYear,
+  hist,
+  levYear,
+}: LongevityChartProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const fullHist = propFullHist ?? hist ?? [];
-  const currentYear = propCurrentYear ?? (fullHist.length > 0 ? fullHist[fullHist.length - 1].y : 2026);
+  const currentYear =
+    propCurrentYear ?? (fullHist.length > 0 ? fullHist[fullHist.length - 1].y : 2026);
 
   const draw = useCallback(() => {
     const canvas = canvasRef.current;
@@ -48,9 +54,16 @@ export function LongevityChart({ fullHist: propFullHist, currentYear: propCurren
     const gridColor = getCSS('--chartgrid');
     const accent = getCSS('--accent');
 
-    const padL = 34, padR = 16, padT = 8, padB = 18;
-    const plotL = padL, plotR = w - padR, plotT = padT, plotB = h - padB;
-    const plotW = plotR - plotL, plotH = plotB - plotT;
+    const padL = 34,
+      padR = 16,
+      padT = 8,
+      padB = 18;
+    const plotL = padL,
+      plotR = w - padR,
+      plotT = padT,
+      plotB = h - padB;
+    const plotW = plotR - plotL,
+      plotH = plotB - plotT;
 
     // Fixed X range
     const minYear = 2026;
@@ -60,7 +73,7 @@ export function LongevityChart({ fullHist: propFullHist, currentYear: propCurren
     const xForYear = (y: number) => plotL + ((y - minYear) / span) * plotW;
 
     // Fixed Y axis from fullHist maximums
-    const maxDag = Math.max(2, ...fullHist.map(r => r.dAg));
+    const maxDag = Math.max(2, ...fullHist.map((r) => r.dAg));
     const yMax = Math.ceil(maxDag);
     const yForVal = (v: number) => plotB - (v / yMax) * plotH;
 
@@ -96,7 +109,7 @@ export function LongevityChart({ fullHist: propFullHist, currentYear: propCurren
     ctx.setLineDash([]);
 
     // dAg line drawn up to currentYear
-    const visibleHist = fullHist.filter(r => r.y <= currentYear);
+    const visibleHist = fullHist.filter((r) => r.y <= currentYear);
     if (visibleHist.length >= 2) {
       ctx.strokeStyle = accent;
       ctx.lineWidth = 2;
@@ -121,7 +134,9 @@ export function LongevityChart({ fullHist: propFullHist, currentYear: propCurren
     }
   }, [fullHist, currentYear, levYear]);
 
-  useEffect(() => { draw(); }, [draw]);
+  useEffect(() => {
+    draw();
+  }, [draw]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -136,12 +151,17 @@ export function LongevityChart({ fullHist: propFullHist, currentYear: propCurren
     obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
     mq.addEventListener('change', draw);
-    return () => { obs.disconnect(); mq.removeEventListener('change', draw); };
+    return () => {
+      obs.disconnect();
+      mq.removeEventListener('change', draw);
+    };
   }, [draw]);
 
   return (
     <div style={{ marginBottom: 16 }}>
-      <h2 className="section-heading" id="longevity-chart-heading">Longevity</h2>
+      <h2 className="section-heading" id="longevity-chart-heading">
+        Longevity
+      </h2>
       <div ref={containerRef} className="panel" style={{ height: 170 }}>
         <canvas
           ref={canvasRef}
@@ -150,11 +170,22 @@ export function LongevityChart({ fullHist: propFullHist, currentYear: propCurren
           aria-label="Longevity chart plotting years of life added per year by aging research over time"
           style={{ width: '100%', height: '100%', display: 'block' }}
         >
-          Longevity curve charting years of healthy life added per year against longevity escape velocity threshold of 1.0.
+          Longevity curve charting years of healthy life added per year against longevity escape
+          velocity threshold of 1.0.
         </canvas>
+
+        <div className="sr-only" aria-live="polite" data-testid="longevity-chart-sr-summary">
+          <p>
+            {`Year ${currentYear}: ${fullHist.find((r) => r.y === currentYear)?.dAg?.toFixed(2) ?? '0.00'} years of healthy life added per year.`}
+            {levYear && currentYear >= levYear
+              ? ` Longevity escape velocity was reached in ${levYear}.`
+              : ' Longevity escape velocity not yet reached.'}
+          </p>
+        </div>
       </div>
       <p className="hint" style={{ marginTop: 4 }}>
-        Years of life added per year by aging research. Longevity escape velocity is when this stays above 1.
+        Years of life added per year by aging research. Longevity escape velocity is when this stays
+        above 1.
       </p>
     </div>
   );
