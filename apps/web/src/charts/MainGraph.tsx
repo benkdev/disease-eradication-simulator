@@ -15,10 +15,7 @@ export interface LineBounds {
   hi: number;
 }
 
-export function getLineBounds(
-  def: VarDef,
-  bounds: SeriesBoundsMap
-): LineBounds {
+export function getLineBounds(def: VarDef, bounds: SeriesBoundsMap): LineBounds {
   const b = bounds[def.key];
   if (def.key === 'LE') {
     return {
@@ -80,7 +77,8 @@ export function MainGraph({
   const containerRef = useRef<HTMLDivElement>(null);
 
   const fullHist = propFullHist ?? hist ?? [];
-  const currentYear = propCurrentYear ?? (fullHist.length > 0 ? fullHist[fullHist.length - 1].y : 2026);
+  const currentYear =
+    propCurrentYear ?? (fullHist.length > 0 ? fullHist[fullHist.length - 1].y : 2026);
 
   const bounds = useMemo(() => seriesBounds(fullHist), [fullHist]);
 
@@ -118,7 +116,9 @@ export function MainGraph({
         if (isOn) activeVarIndices.push(idx);
       });
     } else {
-      VARIABLE_DEFS.forEach((d, i) => { if (d.defaultOn) activeVarIndices.push(i); });
+      VARIABLE_DEFS.forEach((d, i) => {
+        if (d.defaultOn) activeVarIndices.push(i);
+      });
     }
 
     // Top padding is fixed for the whole run based on precomputed markers so axes never shift
@@ -126,7 +126,9 @@ export function MainGraph({
     const hasRunMarkers = crossYear !== null || levYear !== null;
 
     // Padding
-    const padL = 8, padR = 12, padB = 26;
+    const padL = 8,
+      padR = 12,
+      padB = 26;
     const padT = hasRunBoth ? 44 : hasRunMarkers ? 28 : 16;
 
     const plotL = padL;
@@ -160,7 +162,11 @@ export function MainGraph({
     ctx.fillStyle = muted;
     ctx.font = '11px "Schibsted Grotesk", system-ui, sans-serif';
     ctx.textBaseline = 'top';
-    for (let y = Math.ceil(minYear / labelInterval) * labelInterval; y <= maxYear; y += labelInterval) {
+    for (
+      let y = Math.ceil(minYear / labelInterval) * labelInterval;
+      y <= maxYear;
+      y += labelInterval
+    ) {
       const x = xForYear(y);
       if (x > plotR - 30) {
         ctx.textAlign = 'right';
@@ -186,7 +192,7 @@ export function MainGraph({
     }
 
     // Draw each line only up to currentYear
-    const visibleHist = fullHist.filter(r => r.y <= currentYear);
+    const visibleHist = fullHist.filter((r) => r.y <= currentYear);
 
     for (const vi of activeVarIndices) {
       const def = VARIABLE_DEFS[vi];
@@ -198,10 +204,8 @@ export function MainGraph({
 
       if (visibleHist.length === 0) continue;
 
-      const vals = visibleHist.map(r => r[def.key] as number);
-      const transformed = def.scale === 'log'
-        ? vals.map(v => Math.log10(Math.max(1, v)))
-        : vals;
+      const vals = visibleHist.map((r) => r[def.key] as number);
+      const transformed = def.scale === 'log' ? vals.map((v) => Math.log10(Math.max(1, v))) : vals;
 
       ctx.strokeStyle = color;
       ctx.lineWidth = 2.3;
@@ -290,28 +294,38 @@ export function MainGraph({
   // Theme change observer
   useEffect(() => {
     const obs = new MutationObserver(draw);
-    obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'class'] });
+    obs.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme', 'class'],
+    });
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
     mq.addEventListener('change', draw);
-    return () => { obs.disconnect(); mq.removeEventListener('change', draw); };
+    return () => {
+      obs.disconnect();
+      mq.removeEventListener('change', draw);
+    };
   }, [draw]);
 
   // Cursor handling — scrub only years up to currentYear
-  const handlePointer = useCallback((e: React.PointerEvent) => {
-    const canvas = canvasRef.current;
-    if (!canvas || fullHist.length === 0) return;
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const padL = 8, padR = 12;
-    const plotW = rect.width - padL - padR;
-    const minYear = 2026;
-    const finalYear = fullHist[fullHist.length - 1].y;
-    const maxYear = Math.max(finalYear, 2046);
-    const frac = (x - padL) / plotW;
-    const year = Math.round(minYear + frac * (maxYear - minYear));
-    const clamped = Math.max(minYear, Math.min(currentYear, year));
-    onCursorChange(clamped);
-  }, [fullHist, currentYear, onCursorChange]);
+  const handlePointer = useCallback(
+    (e: React.PointerEvent) => {
+      const canvas = canvasRef.current;
+      if (!canvas || fullHist.length === 0) return;
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const padL = 8,
+        padR = 12;
+      const plotW = rect.width - padL - padR;
+      const minYear = 2026;
+      const finalYear = fullHist[fullHist.length - 1].y;
+      const maxYear = Math.max(finalYear, 2046);
+      const frac = (x - padL) / plotW;
+      const year = Math.round(minYear + frac * (maxYear - minYear));
+      const clamped = Math.max(minYear, Math.min(currentYear, year));
+      onCursorChange(clamped);
+    },
+    [fullHist, currentYear, onCursorChange]
+  );
 
   return (
     <div
@@ -332,7 +346,8 @@ export function MainGraph({
         onPointerLeave={() => onCursorChange(null)}
         onPointerCancel={() => onCursorChange(null)}
       >
-        Dynamic multi-line chart displaying AI capability, regulation, diseases remaining, disease eradications, and life expectancy from 2026 onwards.
+        Dynamic multi-line chart displaying AI capability, regulation, diseases remaining, disease
+        eradications, and life expectancy from 2026 onwards.
       </canvas>
     </div>
   );

@@ -22,9 +22,7 @@ export function Header({ scenarioLabel, year, C, started }: HeaderProps) {
       }}
     >
       <div>
-        <h1 style={{ fontSize: '1.05rem', fontWeight: 700, lineHeight: 1.3 }}>
-          The Last Disease
-        </h1>
+        <h1 style={{ fontSize: '1.05rem', fontWeight: 700, lineHeight: 1.3 }}>The Last Disease</h1>
         <p className="hint" data-testid="header-scenario" style={{ fontSize: '0.8rem' }}>
           {started ? scenarioLabel : 'How long until AI cures everything?'}
         </p>
@@ -45,7 +43,11 @@ export function Header({ scenarioLabel, year, C, started }: HeaderProps) {
           {year}
         </div>
         {started && (
-          <div className="hint" data-testid="header-capability" style={{ fontSize: '0.8rem', marginTop: 2 }}>
+          <div
+            className="hint"
+            data-testid="header-capability"
+            style={{ fontSize: '0.8rem', marginTop: 2 }}
+          >
             AI capability {capText}
           </div>
         )}

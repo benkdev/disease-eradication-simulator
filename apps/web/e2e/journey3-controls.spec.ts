@@ -2,7 +2,9 @@ import { test, expect } from '@playwright/test';
 import { SimulatorPage } from './pages/SimulatorPage.js';
 
 test.describe('Journey 3: Simulator Controls, Stepping & Interactive Exploration', () => {
-  test('pauses, steps year-by-year, changes speed, toggles variables, and inspects settings', async ({ page }) => {
+  test('pauses, steps year-by-year, changes speed, toggles variables, and inspects settings', async ({
+    page,
+  }) => {
     const sim = new SimulatorPage(page);
 
     // 1. Start simulation
@@ -59,7 +61,10 @@ test.describe('Journey 3: Simulator Controls, Stepping & Interactive Exploration
     expect(canvasBox).not.toBeNull();
     if (canvasBox) {
       // Hover across canvas
-      await page.mouse.move(canvasBox.x + canvasBox.width * 0.3, canvasBox.y + canvasBox.height * 0.5);
+      await page.mouse.move(
+        canvasBox.x + canvasBox.width * 0.3,
+        canvasBox.y + canvasBox.height * 0.5
+      );
       await page.waitForTimeout(200);
     }
 
@@ -69,9 +74,13 @@ test.describe('Journey 3: Simulator Controls, Stepping & Interactive Exploration
     await expect(sim.settingsPanel).toHaveAttribute('open', '');
 
     // Verify key Gompertz-Makeham & simulation parameters in the settings panel
-    await expect(sim.settingsPanel.getByText('Maximum life expectancy', { exact: true })).toBeVisible();
+    await expect(
+      sim.settingsPanel.getByText('Maximum life expectancy', { exact: true })
+    ).toBeVisible();
     await expect(sim.settingsPanel.getByText('500 years')).toBeVisible();
-    await expect(sim.settingsPanel.getByText('Aging research difficulty', { exact: true })).toBeVisible();
+    await expect(
+      sim.settingsPanel.getByText('Aging research difficulty', { exact: true })
+    ).toBeVisible();
     await expect(sim.settingsPanel.getByText('20', { exact: true })).toBeVisible();
 
     // 8. Test New Run reset

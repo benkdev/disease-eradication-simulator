@@ -25,9 +25,11 @@ export interface Metrics {
  * Uses state.LE and state.agingGain as of the moment of call.
  */
 export function recompute(state: SimState): Metrics {
-  const ageMult = 1 + 0.03
-    * Math.max(0, state.LE - BASELINE_LE - state.agingGain)
-    * Math.max(0, 1 - state.agingGain / 10);
+  const ageMult =
+    1 +
+    0.03 *
+      Math.max(0, state.LE - BASELINE_LE - state.agingGain) *
+      Math.max(0, 1 - state.agingGain / 10);
 
   const counts: [number, number, number, number, number] = [0, 0, 0, 0, 0];
   let totalBurden = 0;
@@ -41,7 +43,7 @@ export function recompute(state: SimState): Metrics {
     counts[s]++;
 
     if (s >= 1) {
-      const mi = (state.type[i] === 2 || state.type[i] === 3) ? ageMult : 1;
+      const mi = state.type[i] === 2 || state.type[i] === 3 ? ageMult : 1;
       const b = state.burden[i] * mi;
       totalBurden += b;
 
@@ -51,7 +53,7 @@ export function recompute(state: SimState): Metrics {
         avertedBurden += b;
       }
 
-      const w = (s === 1 || s === 2) ? 1 : (s === 3 ? 0.5 : 0);
+      const w = s === 1 || s === 2 ? 1 : s === 3 ? 0.5 : 0;
       if (w > 0) {
         const rawB = state.burden[i] * w;
         if (state.type[i] === 2 || state.type[i] === 3) {

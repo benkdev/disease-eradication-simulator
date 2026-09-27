@@ -29,9 +29,7 @@ export function fmtBig(x: number): string {
 
   if (val < 10) {
     const s = val.toFixed(1);
-    return s.endsWith('.0')
-      ? `${s.slice(0, -2)} ${UNITS[unitIdx]}`
-      : `${s} ${UNITS[unitIdx]}`;
+    return s.endsWith('.0') ? `${s.slice(0, -2)} ${UNITS[unitIdx]}` : `${s} ${UNITS[unitIdx]}`;
   } else {
     return `${Math.round(val)} ${UNITS[unitIdx]}`;
   }

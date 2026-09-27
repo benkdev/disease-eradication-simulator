@@ -11,8 +11,13 @@ interface ControlsProps {
 const SPEEDS = [1, 2, 4, 10];
 
 export function Controls({
-  playing, done, speed,
-  onTogglePlay, onStepOnce, onNewRun, onSetSpeed,
+  playing,
+  done,
+  speed,
+  onTogglePlay,
+  onStepOnce,
+  onNewRun,
+  onSetSpeed,
 }: ControlsProps) {
   return (
     <div data-testid="controls-panel" style={{ marginBottom: 16 }}>
@@ -47,7 +52,9 @@ export function Controls({
 
       {/* Speed control */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        <span className="hint" id="speed-label" style={{ fontSize: '0.8rem' }}>Years per second</span>
+        <span className="hint" id="speed-label" style={{ fontSize: '0.8rem' }}>
+          Years per second
+        </span>
         <div
           role="group"
           aria-labelledby="speed-label"
@@ -58,7 +65,7 @@ export function Controls({
             overflow: 'hidden',
           }}
         >
-          {SPEEDS.map(s => (
+          {SPEEDS.map((s) => (
             <button
               key={s}
               aria-pressed={speed === s}

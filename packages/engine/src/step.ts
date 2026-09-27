@@ -7,9 +7,18 @@
 import type { SimState } from './init.js';
 import type { EventEntry } from './params.js';
 import {
-  TYPE_INFO, FAMILIES, NAMED_DISEASES, BASELINE_LE,
-  START_YEAR, END_YEAR, MAX_EVENTS, TOTAL_FAMILIES,
-  A_EXT, A_DIS, G0, B_INT, D_AGE, lifeExp,
+  FAMILIES,
+  NAMED_DISEASES,
+  START_YEAR,
+  END_YEAR,
+  MAX_EVENTS,
+  TOTAL_FAMILIES,
+  A_EXT,
+  A_DIS,
+  G0,
+  B_INT,
+  D_AGE,
+  lifeExp,
 } from './catalog.js';
 import { recompute } from './metrics.js';
 import { fmtBig } from './format.js';
@@ -65,7 +74,11 @@ export function step(state: SimState): void {
         if (cp) {
           const dur = state.year + 1 - cp[0];
           cp[1] = state.year + 1;
-          addEvent(state, `Breakthrough after ${dur} years: a new AI paradigm restarts exponential growth`, 'plat');
+          addEvent(
+            state,
+            `Breakthrough after ${dur} years: a new AI paradigm restarts exponential growth`,
+            'plat'
+          );
         }
       }
     } else {
@@ -75,7 +88,11 @@ export function step(state: SimState): void {
         const u = rng.uniform();
         state.plLeft = Math.max(1, Math.round(params.plen * (0.5 + u)));
         state.plateaus.push([state.year + 1, null]);
-        addEvent(state, `AI progress stalls at ${fmtBig(state.C)}\u00d7 today. A plateau begins`, 'plat');
+        addEvent(
+          state,
+          `AI progress stalls at ${fmtBig(state.C)}\u00d7 today. A plateau begins`,
+          'plat'
+        );
       }
     }
   }
@@ -92,13 +109,17 @@ export function step(state: SimState): void {
   const trust = 0.03 * Math.min(1, eLast / 400);
 
   const uReg = rng.uniform();
-  state.reg = Math.max(0, Math.min(1,
-    state.reg
-    + 0.068 * (params.vol / 100) * (2 * uReg - 1)
-    + 0.06 * (params.reg0 / 100 - state.reg)
-    + alarm
-    - trust
-  ));
+  state.reg = Math.max(
+    0,
+    Math.min(
+      1,
+      state.reg +
+        0.068 * (params.vol / 100) * (2 * uReg - 1) +
+        0.06 * (params.reg0 / 100 - state.reg) +
+        alarm -
+        trust
+    )
+  );
 
   // Political events — at most once every 6 years
   if (state.year - state.lastPoliticalEventYear >= 6) {
@@ -152,11 +173,11 @@ export function step(state: SimState): void {
       break;
     case 'rare':
       gamma = 0;
-      typeMults[1] = 4;   // Genetic and rare
+      typeMults[1] = 4; // Genetic and rare
       typeMults[2] = 0.6; // Chronic
       typeMults[3] = 0.6; // Neuro and mental
-      typeMults[4] = 2;   // Autoimmune
-      typeMults[5] = 2;   // Other
+      typeMults[4] = 2; // Autoimmune
+      typeMults[5] = 2; // Other
       break;
     case 'platforms':
       gamma = 0.5 / (1 + Math.max(0, P));
@@ -231,7 +252,11 @@ export function step(state: SimState): void {
           state.prog[i] = 0.6 * state.diff[i];
           state.resistanceEvents++;
           if (state.nameIdx[i] >= 0) {
-            addEvent(state, `${NAMED_DISEASES[state.nameIdx[i]].name} develops resistance and returns to research`, 'bad');
+            addEvent(
+              state,
+              `${NAMED_DISEASES[state.nameIdx[i]].name} develops resistance and returns to research`,
+              'bad'
+            );
           }
           continue;
         }
@@ -256,7 +281,8 @@ export function step(state: SimState): void {
   let newF = 0;
 
   if (state.poolLeft > 0) {
-    state.accDet += params.newBase * Math.pow(state.C, params.beta / 100) * (state.poolLeft / params.pool);
+    state.accDet +=
+      params.newBase * Math.pow(state.C, params.beta / 100) * (state.poolLeft / params.pool);
     const nNew = Math.min(state.poolLeft, Math.floor(state.accDet));
     state.accDet -= nNew;
 
@@ -313,7 +339,11 @@ export function step(state: SimState): void {
         state.pandemics++;
 
         const famName = FAMILIES[state.fam[ridx]].name;
-        addEvent(state, `A novel ${famName} pandemic breaks out. Research is diverted and emergency rules loosen`, 'bad');
+        addEvent(
+          state,
+          `A novel ${famName} pandemic breaks out. Research is diverted and emergency rules loosen`,
+          'bad'
+        );
       }
     }
   }
@@ -340,7 +370,11 @@ export function step(state: SimState): void {
       if (moved > 0) {
         state.safetyScares++;
         state.reg = Math.min(1, state.reg + 0.18);
-        addEvent(state, `Safety scare: ${moved} AI-designed therapies pulled back into trials. Regulators tighten`, 'bad');
+        addEvent(
+          state,
+          `Safety scare: ${moved} AI-designed therapies pulled back into trials. Regulators tighten`,
+          'bad'
+        );
       }
     }
   }
@@ -383,7 +417,11 @@ export function step(state: SimState): void {
 
         state.platforms++;
         const famInfo = FAMILIES[famIdx];
-        addEvent(state, `Platform breakthrough: ${famInfo.platform} unlocks ${count} ${famInfo.name} diseases`, 'plat');
+        addEvent(
+          state,
+          `Platform breakthrough: ${famInfo.platform} unlocks ${count} ${famInfo.name} diseases`,
+          'plat'
+        );
       }
     }
   }
@@ -423,14 +461,22 @@ export function step(state: SimState): void {
             state.prog[picked] = state.diff[picked];
             state.stage[picked] = 2;
             state.timer[picked] = 0.7 * T;
-            addEvent(state, `Surprise result: a lab fast-tracks ${getName(state, picked)} into trials`, 'surp');
+            addEvent(
+              state,
+              `Surprise result: a lab fast-tracks ${getName(state, picked)} into trials`,
+              'surp'
+            );
           }
         }
       } else {
         // AI capability boost — only if not on a plateau
         if (state.plLeft === 0) {
           state.C = 1.3 * state.C;
-          addEvent(state, 'Surprise: an unexpected architecture jump boosts AI capability 30%', 'surp');
+          addEvent(
+            state,
+            'Surprise: an unexpected architecture jump boosts AI capability 30%',
+            'surp'
+          );
         }
       }
     }
@@ -443,7 +489,11 @@ export function step(state: SimState): void {
   const logC = Math.floor(Math.log10(state.C));
   if (logC > state.lastMilestone && logC >= 1) {
     state.lastMilestone = logC;
-    addEvent(state, `AI research capability passes ${fmtBig(Math.pow(10, logC))}\u00d7 today`, 'ai');
+    addEvent(
+      state,
+      `AI research capability passes ${fmtBig(Math.pow(10, logC))}\u00d7 today`,
+      'ai'
+    );
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -490,15 +540,21 @@ export function step(state: SimState): void {
   const h = state.hist;
   if (h.length >= 3) {
     const n = h.length;
-    const avg = (key: keyof typeof h[0]) => {
-      return ((h[n - 1][key] as number) + (h[n - 2][key] as number) + (h[n - 3][key] as number)) / 3;
+    const avg = (key: keyof (typeof h)[0]) => {
+      return (
+        ((h[n - 1][key] as number) + (h[n - 2][key] as number) + (h[n - 3][key] as number)) / 3
+      );
     };
 
     // Escape velocity
     if (!state.escapeVelocityReached && avg('dAg') >= 1) {
       state.escapeVelocityReached = true;
       state.levYear = state.year;
-      addEvent(state, 'Longevity escape velocity: aging research now adds more than one year of life per year', 'win');
+      addEvent(
+        state,
+        'Longevity escape velocity: aging research now adds more than one year of life per year',
+        'win'
+      );
     }
 
     // Crossover
