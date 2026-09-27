@@ -8,6 +8,7 @@ import { useState, useCallback } from 'react';
 import { useSimulation } from './hooks/useSimulation';
 import { SetupModal } from './components/SetupModal';
 import { ResultsModal } from './components/ResultsModal';
+import { ImportModal } from './components/ImportModal';
 import { Header } from './components/Header';
 import { MainGraph } from './charts/MainGraph';
 import { VariableCards, VARIABLE_DEFS } from './components/VariableCards';
@@ -26,6 +27,7 @@ export default function App() {
   const [enabledVars, setEnabledVars] = useState<boolean[]>(() =>
     VARIABLE_DEFS.map((d) => d.defaultOn)
   );
+  const [showImport, setShowImport] = useState(false);
 
   const toggleVar = useCallback((idx: number) => {
     setEnabledVars((prev) => {
@@ -73,7 +75,7 @@ export default function App() {
             fontSize: '0.85rem',
           }}
         >
-          <span>Replaying a shared run</span>
+          <span>Replaying a saved or shared run</span>
           <button
             onClick={sim.newRun}
             style={{ fontSize: '0.8rem', padding: '4px 12px', minHeight: 30 }}
@@ -126,6 +128,7 @@ export default function App() {
                 onNewRun={sim.newRun}
                 onSetSpeed={sim.setSpeed}
                 onShare={() => copyShareableLink(sim.getParams())}
+                onOpenImport={() => setShowImport(true)}
               />
             </div>
 
@@ -152,7 +155,27 @@ export default function App() {
         <HowItWorks />
       </main>
 
-      {sim.showSetup && <SetupModal getParams={sim.getParams} onStart={sim.startRun} />}
+      {sim.showSetup && !showImport && (
+        <SetupModal
+          getParams={sim.getParams}
+          onStart={sim.startRun}
+          onOpenImport={() => setShowImport(true)}
+        />
+      )}
+
+      {showImport && (
+        <ImportModal
+          onClose={() => setShowImport(false)}
+          onReplay={(payload) => {
+            sim.importAndReplay(payload);
+            setShowImport(false);
+          }}
+          onSimulate={(payload, growth) => {
+            sim.importAndSimulate(payload, growth);
+            setShowImport(false);
+          }}
+        />
+      )}
 
       {sim.showResults && sim.summary && (
         <ResultsModal
