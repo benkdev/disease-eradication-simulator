@@ -19,7 +19,7 @@ describe('MainGraph line drawing and bounds', () => {
 
   it('draws the last point of every enabled monotonic line (AI capability, eradicated, life expectancy) at the top gridline for a completed run', () => {
     // Test across presets and seeds for completed runs
-    for (const growth of ['exp', 'plateaus'] as const) {
+    for (const growth of ['exp', 'waves'] as const) {
       for (const seed of [0, 1, 7]) {
         const res = simulate({ ...DEFAULTS, growth, seed });
         expect(res.done).toBe(true);
