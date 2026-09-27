@@ -262,10 +262,11 @@ export function useSimulation(): SimController {
 
   const importAndReplay = useCallback((payload: SimulationExportPayload) => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    const resolvedSeed = Number(payload.seed ?? payload.summary?.seed ?? payload.params?.seed) || 0;
     const hist = payload.history;
     const finalYear = hist.length > 0 ? hist[hist.length - 1].y : 2026;
     const summary = payload.summary ?? {
-      seed: Number(payload.seed) || 0,
+      seed: resolvedSeed,
       outcome: hist[hist.length - 1]?.rem === 0 ? 'full' : 'crossover',
       endYear: finalYear,
       crossYear: null,
@@ -284,7 +285,7 @@ export function useSimulation(): SimController {
     };
 
     const mockResult: SimResult = {
-      params: payload.params ?? { ...DEFAULTS, seed: Number(payload.seed) || 0 },
+      params: payload.params ?? { ...DEFAULTS, seed: resolvedSeed },
       hist,
       eventsAll: [],
       plateaus: [],
@@ -315,7 +316,7 @@ export function useSimulation(): SimController {
   const importAndSimulate = useCallback(
     (payload: SimulationExportPayload, chosenGrowth: Params['growth']) => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      const seedNum = Number(payload.seed) || 0;
+      const seedNum = Number(payload.seed ?? payload.summary?.seed ?? payload.params?.seed) || 0;
       const baseParams: Params = payload.params
         ? { ...payload.params }
         : { ...DEFAULTS, seed: seedNum };
