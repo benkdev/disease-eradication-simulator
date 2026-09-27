@@ -10,7 +10,13 @@ interface ResultsModalProps {
   onNewRun: () => void;
 }
 
-export function ResultsModal({ summary, scenarioLabel, onClose, onKeepGoing, onNewRun }: ResultsModalProps) {
+export function ResultsModal({
+  summary,
+  scenarioLabel,
+  onClose,
+  onKeepGoing,
+  onNewRun,
+}: ResultsModalProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const primaryRef = useRef<HTMLButtonElement>(null);
 
@@ -58,7 +64,7 @@ export function ResultsModal({ summary, scenarioLabel, onClose, onKeepGoing, onN
       aria-labelledby="results-title"
       aria-describedby="results-summary-text"
       data-testid="results-modal"
-      onClick={e => {
+      onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
@@ -74,7 +80,11 @@ export function ResultsModal({ summary, scenarioLabel, onClose, onKeepGoing, onN
         </button>
 
         <div style={{ paddingTop: 32 }}>
-          <h2 id="results-title" data-testid="results-title" style={{ fontSize: '1.5rem', fontWeight: 700 }}>
+          <h2
+            id="results-title"
+            data-testid="results-title"
+            style={{ fontSize: '1.5rem', fontWeight: 700 }}
+          >
             {title}
           </h2>
           <div
@@ -90,7 +100,10 @@ export function ResultsModal({ summary, scenarioLabel, onClose, onKeepGoing, onN
           >
             {endYear}
           </div>
-          <p id="results-summary-text" style={{ color: 'var(--muted)', fontSize: '0.85rem', marginBottom: 16 }}>
+          <p
+            id="results-summary-text"
+            style={{ color: 'var(--muted)', fontSize: '0.85rem', marginBottom: 16 }}
+          >
             {summaryText} <em>{scenarioLabel}.</em>
           </p>
 
@@ -106,7 +119,13 @@ export function ResultsModal({ summary, scenarioLabel, onClose, onKeepGoing, onN
             {rows.map(([label, value]) => (
               <div key={label} style={{ display: 'contents' }}>
                 <dt style={{ color: 'var(--muted)' }}>{label}</dt>
-                <dd style={{ fontWeight: 600, textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
+                <dd
+                  style={{
+                    fontWeight: 600,
+                    textAlign: 'right',
+                    fontVariantNumeric: 'tabular-nums',
+                  }}
+                >
                   {value}
                 </dd>
               </div>

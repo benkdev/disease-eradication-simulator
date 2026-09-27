@@ -23,11 +23,11 @@ import { LiveAnnouncer } from './components/LiveAnnouncer';
 export default function App() {
   const sim = useSimulation();
   const [enabledVars, setEnabledVars] = useState<boolean[]>(() =>
-    VARIABLE_DEFS.map(d => d.defaultOn)
+    VARIABLE_DEFS.map((d) => d.defaultOn)
   );
 
   const toggleVar = useCallback((idx: number) => {
-    setEnabledVars(prev => {
+    setEnabledVars((prev) => {
       const next = [...prev];
       next[idx] = !next[idx];
       return next;
@@ -73,7 +73,10 @@ export default function App() {
           }}
         >
           <span>Replaying a shared run</span>
-          <button onClick={sim.newRun} style={{ fontSize: '0.8rem', padding: '4px 12px', minHeight: 30 }}>
+          <button
+            onClick={sim.newRun}
+            style={{ fontSize: '0.8rem', padding: '4px 12px', minHeight: 30 }}
+          >
             Start a new run of your own
           </button>
         </div>
@@ -101,8 +104,8 @@ export default function App() {
             />
 
             <p className="hint" style={{ margin: '6px 0 12px' }}>
-              Each line is scaled to its full-run range. Shaded bands mark AI plateaus.
-              Tap a variable to show or hide it, and touch the graph to read any year.
+              Each line is scaled to its full-run range. Shaded bands mark AI plateaus. Tap a
+              variable to show or hide it, and touch the graph to read any year.
             </p>
 
             <VariableCards
@@ -138,27 +141,16 @@ export default function App() {
               levYear={sim.levYear}
             />
 
-            <EventLog
-              events={sim.eventsAll}
-              currentYear={sim.currentYear}
-            />
+            <EventLog events={sim.eventsAll} currentYear={sim.currentYear} />
           </>
         )}
 
-        <SettingsPanel
-          getParams={sim.getParams}
-          updateParam={sim.updateParam}
-        />
+        <SettingsPanel getParams={sim.getParams} updateParam={sim.updateParam} />
 
         <HowItWorks />
       </main>
 
-      {sim.showSetup && (
-        <SetupModal
-          getParams={sim.getParams}
-          onStart={sim.startRun}
-        />
-      )}
+      {sim.showSetup && <SetupModal getParams={sim.getParams} onStart={sim.startRun} />}
 
       {sim.showResults && sim.summary && (
         <ResultsModal

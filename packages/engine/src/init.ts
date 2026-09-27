@@ -5,9 +5,16 @@
 
 import { RNG } from './rng.js';
 import {
-  TYPE_INFO, FAMILIES, NAMED_DISEASES, TOTAL_BURDEN, BASELINE_LE,
-  PANDEMIC_RESERVE, START_YEAR, TOTAL_KNOWN, TOTAL_FAMILIES, MAX_EVENTS,
-  G0, solveGmin,
+  TYPE_INFO,
+  NAMED_DISEASES,
+  TOTAL_BURDEN,
+  BASELINE_LE,
+  PANDEMIC_RESERVE,
+  START_YEAR,
+  TOTAL_KNOWN,
+  TOTAL_FAMILIES,
+  G0,
+  solveGmin,
 } from './catalog.js';
 import type { Params, YearRecord, EventEntry } from './params.js';
 import { fmtNum } from './format.js';
@@ -156,7 +163,7 @@ export function createSim(params: Params): SimState {
 
     // Create diseases. Per disease: family draw, then difficulty (gauss).
     for (let i = 0; i < n; i++) {
-      const b = Math.max(50, Rt * weights[i] / sumW);
+      const b = Math.max(50, (Rt * weights[i]) / sumW);
       const famIdx = pickFam(rng, t);
       const z = rng.gauss();
       const d = Math.max(1, ti.medianDiff * Math.exp(1.0 * z));
@@ -179,9 +186,11 @@ export function createSim(params: Params): SimState {
   for (let i = 0; i < resolvedParams.pool; i++) {
     const u = rng.uniform();
     let t: number;
-    if (u < 0.8) t = 1;       // Genetic and rare
-    else if (u < 0.9) t = 0;  // Infectious
-    else t = 5;                // Other
+    if (u < 0.8)
+      t = 1; // Genetic and rare
+    else if (u < 0.9)
+      t = 0; // Infectious
+    else t = 5; // Other
 
     const famIdx = pickFam(rng, t);
     const z1 = rng.gauss();
@@ -326,11 +335,13 @@ export function createSim(params: Params): SimState {
     nameIdx,
     displayOrder,
     hist: [firstRecord],
-    events: [{
-      year: START_YEAR,
-      msg: `Run ${seed} begins with ${fmtNum(TOTAL_KNOWN)} known diseases`,
-      kind: 'ai',
-    }],
+    events: [
+      {
+        year: START_YEAR,
+        msg: `Run ${seed} begins with ${fmtNum(TOTAL_KNOWN)} known diseases`,
+        kind: 'ai',
+      },
+    ],
     done: false,
     crossYear: null,
     levYear: null,

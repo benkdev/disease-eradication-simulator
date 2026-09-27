@@ -34,9 +34,23 @@ export interface SimResult {
 export function simulate(params: Engine.Params): SimResult {
   const engineModule = Engine as Record<string, unknown>;
   if (typeof engineModule['simulate'] === 'function') {
-    const fn = engineModule['simulate'] as (p: Engine.Params) => any;
+    const fn = engineModule['simulate'] as (p: Engine.Params) => {
+      summary?: Engine.RunSummary;
+      eventsAll?: Engine.EventEntry[];
+      events?: Engine.EventEntry[];
+      hist: Engine.YearRecord[];
+      params?: Engine.Params;
+      plateaus?: [number, number | null][];
+      crossYear?: number | null;
+      levYear?: number | null;
+      done?: boolean;
+    };
     const res = fn(params);
-    const summary = res.summary ?? (typeof engineModule['summarize'] === 'function' ? (engineModule['summarize'] as any)(res) : Engine.summarize(res));
+    const summary =
+      res.summary ??
+      (typeof engineModule['summarize'] === 'function'
+        ? (engineModule['summarize'] as (s: unknown) => Engine.RunSummary)(res)
+        : Engine.summarize(res as unknown as Engine.SimState));
     const eventsAll = res.eventsAll ?? res.events ?? [];
     const hist = res.hist;
     return {
@@ -96,10 +110,10 @@ export function seriesBounds(fullHist: Engine.YearRecord[]): SeriesBoundsMap {
   const keys = Object.keys(sample) as (keyof Engine.YearRecord)[];
   for (const k of keys) {
     if (typeof sample[k] !== 'number') continue;
-    const vals = fullHist.map(r => r[k] as number);
+    const vals = fullHist.map((r) => r[k] as number);
     const min = Math.min(...vals);
     const max = Math.max(...vals);
-    const pos = vals.filter(v => v > 0);
+    const pos = vals.filter((v) => v > 0);
     const logMin = pos.length > 0 ? Math.log10(Math.max(1, Math.min(...pos))) : 0;
     const logMax = Math.log10(Math.max(1, max));
     map[k] = { min, max, logMin, logMax, lo: min, hi: max };

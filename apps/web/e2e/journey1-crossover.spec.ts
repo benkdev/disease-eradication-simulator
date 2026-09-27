@@ -2,7 +2,9 @@ import { test, expect } from '@playwright/test';
 import { SimulatorPage } from './pages/SimulatorPage.js';
 
 test.describe('Journey 1: Primary Simulation Lifecycle (Setup -> Crossover -> Results Validation)', () => {
-  test('launches simulation, advances to crossover milestone, and inspects results', async ({ page }) => {
+  test('launches simulation, advances to crossover milestone, and inspects results', async ({
+    page,
+  }) => {
     const sim = new SimulatorPage(page);
 
     // 1. Visit app and verify setup modal is presented
