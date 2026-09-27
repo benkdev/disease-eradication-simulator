@@ -298,6 +298,7 @@ export function useSimulation(): SimController {
     };
 
     resultRef.current = mockResult;
+    paramsRef.current = mockResult.params;
     setResult(mockResult);
     setSummary(summary);
     currentYearRef.current = finalYear;
