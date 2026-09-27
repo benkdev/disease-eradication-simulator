@@ -17,12 +17,18 @@ function getCSS(name: string): string {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 }
 
-export function RaceChart({ fullHist: propFullHist, currentYear: propCurrentYear, hist, crossYear }: RaceChartProps) {
+export function RaceChart({
+  fullHist: propFullHist,
+  currentYear: propCurrentYear,
+  hist,
+  crossYear,
+}: RaceChartProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const fullHist = propFullHist ?? hist ?? [];
-  const currentYear = propCurrentYear ?? (fullHist.length > 0 ? fullHist[fullHist.length - 1].y : 2026);
+  const currentYear =
+    propCurrentYear ?? (fullHist.length > 0 ? fullHist[fullHist.length - 1].y : 2026);
 
   const draw = useCallback(() => {
     const canvas = canvasRef.current;
@@ -48,9 +54,16 @@ export function RaceChart({ fullHist: propFullHist, currentYear: propCurrentYear
     const resHi = getCSS('--res-hi');
     const good = getCSS('--good');
 
-    const padL = 34, padR = 16, padT = 8, padB = 18;
-    const plotL = padL, plotR = w - padR, plotT = padT, plotB = h - padB;
-    const plotW = plotR - plotL, plotH = plotB - plotT;
+    const padL = 34,
+      padR = 16,
+      padT = 8,
+      padB = 18;
+    const plotL = padL,
+      plotR = w - padR,
+      plotT = padT,
+      plotB = h - padB;
+    const plotW = plotR - plotL,
+      plotH = plotB - plotT;
 
     // Fixed X range
     const minYear = 2026;
@@ -91,7 +104,7 @@ export function RaceChart({ fullHist: propFullHist, currentYear: propCurrentYear
     }
 
     // Lines drawn up to currentYear
-    const visibleHist = fullHist.filter(r => r.y <= currentYear);
+    const visibleHist = fullHist.filter((r) => r.y <= currentYear);
 
     const drawLine = (key: 'newF' | 'erad', color: string) => {
       if (visibleHist.length < 2) return;
@@ -125,7 +138,9 @@ export function RaceChart({ fullHist: propFullHist, currentYear: propCurrentYear
     }
   }, [fullHist, currentYear, crossYear]);
 
-  useEffect(() => { draw(); }, [draw]);
+  useEffect(() => {
+    draw();
+  }, [draw]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -140,12 +155,17 @@ export function RaceChart({ fullHist: propFullHist, currentYear: propCurrentYear
     obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
     mq.addEventListener('change', draw);
-    return () => { obs.disconnect(); mq.removeEventListener('change', draw); };
+    return () => {
+      obs.disconnect();
+      mq.removeEventListener('change', draw);
+    };
   }, [draw]);
 
   return (
     <div style={{ marginBottom: 16 }}>
-      <h2 className="section-heading" id="race-chart-heading">The race: new diseases vs cures</h2>
+      <h2 className="section-heading" id="race-chart-heading">
+        The race: new diseases vs cures
+      </h2>
       <div ref={containerRef} className="panel" style={{ height: 170 }}>
         <canvas
           ref={canvasRef}
@@ -154,12 +174,13 @@ export function RaceChart({ fullHist: propFullHist, currentYear: propCurrentYear
           aria-label="Log-scale chart plotting new diseases found per year versus diseases eradicated per year"
           style={{ width: '100%', height: '100%', display: 'block' }}
         >
-          Log-scale comparison chart between newly discovered diseases and eradicated diseases per year.
+          Log-scale comparison chart between newly discovered diseases and eradicated diseases per
+          year.
         </canvas>
       </div>
       <p className="hint" style={{ marginTop: 4 }}>
-        Log scale. Pink = new diseases found per year. Green = diseases eradicated per year.
-        The run ends when the green line crosses above the pink line.
+        Log scale. Pink = new diseases found per year. Green = diseases eradicated per year. The run
+        ends when the green line crosses above the pink line.
       </p>
     </div>
   );

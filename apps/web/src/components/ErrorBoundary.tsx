@@ -66,7 +66,12 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
       const { error } = this.state;
 
       return (
-        <div className="modal-overlay" role="alert" aria-live="assertive" data-testid="error-boundary-fallback">
+        <div
+          className="modal-overlay"
+          role="alert"
+          aria-live="assertive"
+          data-testid="error-boundary-fallback"
+        >
           <div className="modal-card" style={{ maxWidth: 480 }}>
             {/* Warning / Error Indicator Icon */}
             <div
@@ -98,11 +103,17 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               </svg>
             </div>
 
-            <h2 style={{ fontSize: '1.35rem', fontWeight: 700, marginBottom: 8, color: 'var(--ink)' }}>
+            <h2
+              style={{ fontSize: '1.35rem', fontWeight: 700, marginBottom: 8, color: 'var(--ink)' }}
+            >
               Simulation interrupted
             </h2>
-            <p className="hint" style={{ marginBottom: 20, color: 'var(--muted)', fontSize: '0.88rem' }}>
-              An unexpected error occurred during execution. You can attempt to restart the simulation or reload the application.
+            <p
+              className="hint"
+              style={{ marginBottom: 20, color: 'var(--muted)', fontSize: '0.88rem' }}
+            >
+              An unexpected error occurred during execution. You can attempt to restart the
+              simulation or reload the application.
             </p>
 
             {/* Action buttons */}
@@ -125,7 +136,14 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             </div>
 
             {/* Technical diagnostic details */}
-            <details style={{ marginTop: 12, border: '1px solid var(--line)', borderRadius: 8, padding: '8px 12px' }}>
+            <details
+              style={{
+                marginTop: 12,
+                border: '1px solid var(--line)',
+                borderRadius: 8,
+                padding: '8px 12px',
+              }}
+            >
               <summary
                 style={{
                   cursor: 'pointer',
@@ -139,7 +157,14 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                 Technical details
               </summary>
               <div style={{ marginTop: 8 }}>
-                <p style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--bad)', marginBottom: 4 }}>
+                <p
+                  style={{
+                    fontSize: '0.8rem',
+                    fontWeight: 600,
+                    color: 'var(--bad)',
+                    marginBottom: 4,
+                  }}
+                >
                   {error.name}: {error.message}
                 </p>
                 {error.stack && (

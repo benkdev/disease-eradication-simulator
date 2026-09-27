@@ -5,95 +5,97 @@
 
 /* ── Light mode (default) ──────────────────────────────────────────────────── */
 :root {
-  --bg:        #F7F2F5;
-  --panel:     #FFFFFF;
-  --ink:       #2A1B3D;
-  --muted:     #6E6078;
-  --line:      #E3D8E2;
-  --chartgrid: #EDE4EC;
-  --accent:    #5B3A8C;
-  --good:      #1F8A6A;
-  --bad:       #C2395F;
-  --plat:      #1F8A8A;
-  --surp:      #B7791F;
-  --res-lo:    #5B3A8C;
-  --res-hi:    #D6457A;
-  --trial:     #E0A030;
-  --v1:        #5B3A8C;
-  --v2:        #B7791F;
-  --v3:        #C2395F;
-  --v4:        #1F8A6A;
-  --v5:        #E07B39;
-  --v6:        #2B7BB9;
-  --v7:        #8A5A44;
-  --v8:        #9B3FB5;
-  --v9:        #4F7A28;
-  --v10:       #D14F9E;
-  --v11:       #3E6E8E;
+  --bg: #f7f2f5;
+  --panel: #ffffff;
+  --ink: #2a1b3d;
+  --muted: #6e6078;
+  --line: #e3d8e2;
+  --chartgrid: #ede4ec;
+  --accent: #5b3a8c;
+  --good: #1f8a6a;
+  --bad: #c2395f;
+  --plat: #1f8a8a;
+  --surp: #b7791f;
+  --res-lo: #5b3a8c;
+  --res-hi: #d6457a;
+  --trial: #e0a030;
+  --v1: #5b3a8c;
+  --v2: #b7791f;
+  --v3: #c2395f;
+  --v4: #1f8a6a;
+  --v5: #e07b39;
+  --v6: #2b7bb9;
+  --v7: #8a5a44;
+  --v8: #9b3fb5;
+  --v9: #4f7a28;
+  --v10: #d14f9e;
+  --v11: #3e6e8e;
 }
 
 /* ── Dark mode via system preference ──────────────────────────────────────── */
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg:        #16121C;
-    --panel:     #1F1A27;
-    --ink:       #F1EAF4;
-    --muted:     #A596AE;
-    --line:      #342B3F;
-    --chartgrid: #2A2333;
-    --accent:    #B79BE6;
-    --good:      #6FD3A4;
-    --bad:       #F0628F;
-    --plat:      #38B2AC;
-    --surp:      #F2B54A;
-    --res-lo:    #6D4BA3;
-    --res-hi:    #F0628F;
-    --trial:     #F2B54A;
-    --v1:        #B79BE6;
-    --v2:        #F2B54A;
-    --v3:        #F0628F;
-    --v4:        #6FD3A4;
-    --v5:        #F59A5B;
-    --v6:        #6FB4EE;
-    --v7:        #D1A68C;
-    --v8:        #D38BEB;
-    --v9:        #A6D66A;
-    --v10:       #F28CCB;
-    --v11:       #8FC1DD;
+  :root:not([data-theme='light']) {
+    --bg: #16121c;
+    --panel: #1f1a27;
+    --ink: #f1eaf4;
+    --muted: #a596ae;
+    --line: #342b3f;
+    --chartgrid: #2a2333;
+    --accent: #b79be6;
+    --good: #6fd3a4;
+    --bad: #f0628f;
+    --plat: #38b2ac;
+    --surp: #f2b54a;
+    --res-lo: #6d4ba3;
+    --res-hi: #f0628f;
+    --trial: #f2b54a;
+    --v1: #b79be6;
+    --v2: #f2b54a;
+    --v3: #f0628f;
+    --v4: #6fd3a4;
+    --v5: #f59a5b;
+    --v6: #6fb4ee;
+    --v7: #d1a68c;
+    --v8: #d38beb;
+    --v9: #a6d66a;
+    --v10: #f28ccb;
+    --v11: #8fc1dd;
   }
 }
 
 /* ── Dark mode via explicit toggle ────────────────────────────────────────── */
-:root[data-theme="dark"] {
-  --bg:        #16121C;
-  --panel:     #1F1A27;
-  --ink:       #F1EAF4;
-  --muted:     #A596AE;
-  --line:      #342B3F;
-  --chartgrid: #2A2333;
-  --accent:    #B79BE6;
-  --good:      #6FD3A4;
-  --bad:       #F0628F;
-  --plat:      #38B2AC;
-  --surp:      #F2B54A;
-  --res-lo:    #6D4BA3;
-  --res-hi:    #F0628F;
-  --trial:     #F2B54A;
-  --v1:        #B79BE6;
-  --v2:        #F2B54A;
-  --v3:        #F0628F;
-  --v4:        #6FD3A4;
-  --v5:        #F59A5B;
-  --v6:        #6FB4EE;
-  --v7:        #D1A68C;
-  --v8:        #D38BEB;
-  --v9:        #A6D66A;
-  --v10:       #F28CCB;
-  --v11:       #8FC1DD;
+:root[data-theme='dark'] {
+  --bg: #16121c;
+  --panel: #1f1a27;
+  --ink: #f1eaf4;
+  --muted: #a596ae;
+  --line: #342b3f;
+  --chartgrid: #2a2333;
+  --accent: #b79be6;
+  --good: #6fd3a4;
+  --bad: #f0628f;
+  --plat: #38b2ac;
+  --surp: #f2b54a;
+  --res-lo: #6d4ba3;
+  --res-hi: #f0628f;
+  --trial: #f2b54a;
+  --v1: #b79be6;
+  --v2: #f2b54a;
+  --v3: #f0628f;
+  --v4: #6fd3a4;
+  --v5: #f59a5b;
+  --v6: #6fb4ee;
+  --v7: #d1a68c;
+  --v8: #d38beb;
+  --v9: #a6d66a;
+  --v10: #f28ccb;
+  --v11: #8fc1dd;
 }
 
 /* ── Global reset & typography ────────────────────────────────────────────── */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -105,7 +107,13 @@ html {
 }
 
 body {
-  font-family: 'Schibsted Grotesk', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-family:
+    'Schibsted Grotesk',
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
   font-size: 0.9rem;
   line-height: 1.45;
   color: var(--ink);
@@ -293,7 +301,9 @@ details > :not(summary) {
 
 /* ── Reduced motion ───────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  *, ::before, ::after {
+  *,
+  ::before,
+  ::after {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;

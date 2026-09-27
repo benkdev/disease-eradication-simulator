@@ -1,0 +1,11 @@
+node_modules/
+dist/
+build/
+out/
+allure-results/
+allure-report/
+test-results/
+playwright-report/
+infra/
+*.log
+pnpm-lock.yaml

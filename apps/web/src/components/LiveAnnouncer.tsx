@@ -52,7 +52,9 @@ export function LiveAnnouncer({
     if (!started) return;
     if (playing !== prevPlayingRef.current) {
       if (playing) {
-        setMessage(`Simulation playing at ${speed} years per second. Current year: ${currentYear}.`);
+        setMessage(
+          `Simulation playing at ${speed} years per second. Current year: ${currentYear}.`
+        );
       } else if (!done) {
         setMessage(`Simulation paused at year ${currentYear}.`);
       }
@@ -85,7 +87,9 @@ export function LiveAnnouncer({
     if (done && summary && !announcedMilestonesRef.current.done) {
       announcedMilestonesRef.current.done = true;
       if (summary.outcome === 'full') {
-        setMessage(`Simulation completed in year ${summary.endYear}: Every disease has been eradicated.`);
+        setMessage(
+          `Simulation completed in year ${summary.endYear}: Every disease has been eradicated.`
+        );
       } else if (summary.outcome === 'crossover') {
         setMessage(`Simulation completed: Crossover reached in year ${summary.endYear}.`);
       } else {

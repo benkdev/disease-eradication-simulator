@@ -1,10 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { DEFAULTS } from '../engine';
-import {
-  paramsToQueryString,
-  paramsFromQueryString,
-  copyShareableLink,
-} from '../utils/urlState';
+import { paramsToQueryString, paramsFromQueryString, copyShareableLink } from '../utils/urlState';
 
 describe('urlState serialization & parsing', () => {
   it('omits default values from query string for clean URLs', () => {

@@ -25,7 +25,10 @@ export function paramsFromQueryString(search: string, defaults: Params = DEFAULT
   const result: Params = { ...defaults };
 
   // Parse string and numeric fields
-  for (const [key, defaultVal] of Object.entries(defaults) as [keyof Params, Params[keyof Params]][]) {
+  for (const [key, defaultVal] of Object.entries(defaults) as [
+    keyof Params,
+    Params[keyof Params],
+  ][]) {
     const rawVal = searchParams.get(key);
     if (rawVal === null) continue;
 
@@ -34,7 +37,12 @@ export function paramsFromQueryString(search: string, defaults: Params = DEFAULT
         result.growth = rawVal;
       }
     } else if (key === 'priority') {
-      if (rawVal === 'killers' || rawVal === 'rare' || rawVal === 'platforms' || rawVal === 'aging') {
+      if (
+        rawVal === 'killers' ||
+        rawVal === 'rare' ||
+        rawVal === 'platforms' ||
+        rawVal === 'aging'
+      ) {
         result.priority = rawVal;
       }
     } else if (typeof defaultVal === 'boolean') {
@@ -64,11 +72,17 @@ export function syncParamsToUrl(params: Params): void {
  * Copies the current shareable simulation URL to the clipboard.
  */
 export async function copyShareableLink(params: Params): Promise<boolean> {
-  const win = typeof window !== 'undefined' ? window : (globalThis as unknown as { window?: Window }).window;
-  const nav = typeof navigator !== 'undefined' ? navigator : (globalThis as unknown as { navigator?: Navigator }).navigator;
+  const win =
+    typeof window !== 'undefined' ? window : (globalThis as unknown as { window?: Window }).window;
+  const nav =
+    typeof navigator !== 'undefined'
+      ? navigator
+      : (globalThis as unknown as { navigator?: Navigator }).navigator;
   if (!win || !nav?.clipboard) return false;
   const qs = paramsToQueryString(params);
-  const fullUrl = qs ? `${win.location.origin}${win.location.pathname}?${qs}` : win.location.origin + win.location.pathname;
+  const fullUrl = qs
+    ? `${win.location.origin}${win.location.pathname}?${qs}`
+    : win.location.origin + win.location.pathname;
   try {
     await nav.clipboard.writeText(fullUrl);
     return true;

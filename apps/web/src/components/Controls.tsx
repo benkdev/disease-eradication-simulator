@@ -76,7 +76,9 @@ export function Controls({
 
       {/* Speed control */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        <span className="hint" id="speed-label" style={{ fontSize: '0.8rem' }}>Years per second</span>
+        <span className="hint" id="speed-label" style={{ fontSize: '0.8rem' }}>
+          Years per second
+        </span>
         <div
           role="group"
           aria-labelledby="speed-label"
@@ -87,7 +89,7 @@ export function Controls({
             overflow: 'hidden',
           }}
         >
-          {SPEEDS.map(s => (
+          {SPEEDS.map((s) => (
             <button
               key={s}
               aria-pressed={speed === s}

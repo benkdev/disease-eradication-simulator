@@ -120,30 +120,30 @@ flowchart LR
 
 ## Symbols and variables
 
-| Symbol | Meaning | Unit or range |
-| --- | --- | --- |
-| t | Years since 2026 | years |
-| u | A fresh uniform random draw | 0 to 1 |
-| z | A fresh standard normal random draw | N(0, 1) |
-| C | AI research capability relative to 2026 | multiple of today (starts at 1) |
-| g | AI growth rate this year | fraction per year |
-| R | Regulation, from laissez-faire to strict | 0 to 1 |
-| P | AI progress index, ln C / ln 10,000 | 0 at today, 1 at 10,000× |
-| c | Pipeline compaction | 0 to 1 |
-| T | Clinical trial length | years |
-| p | Trial success probability | 0.1 to 0.9 |
-| L | Global rollout time | years |
-| D | Research discoveries per year for diseases | discoveries |
-| D_aging | Research discoveries per year for aging | discoveries |
-| E | Diseases eradicated this year | count |
-| newF | New diseases found this year | count |
-| rem | Diseases remaining (research, trials, rollout) | count |
-| b_i | Burden of disease i | DALYs per year |
-| O, H | Remaining burden of age-independent and age-related diseases | DALYs per year |
-| A, B, G | Gompertz–Makeham parameters | per year |
-| LE | Period life expectancy at birth | years |
-| LE_dis | Life expectancy with aging untouched | years |
-| dAg | Change in years added by aging research | years per year |
+| Symbol  | Meaning                                                      | Unit or range                   |
+| ------- | ------------------------------------------------------------ | ------------------------------- |
+| t       | Years since 2026                                             | years                           |
+| u       | A fresh uniform random draw                                  | 0 to 1                          |
+| z       | A fresh standard normal random draw                          | N(0, 1)                         |
+| C       | AI research capability relative to 2026                      | multiple of today (starts at 1) |
+| g       | AI growth rate this year                                     | fraction per year               |
+| R       | Regulation, from laissez-faire to strict                     | 0 to 1                          |
+| P       | AI progress index, ln C / ln 10,000                          | 0 at today, 1 at 10,000×        |
+| c       | Pipeline compaction                                          | 0 to 1                          |
+| T       | Clinical trial length                                        | years                           |
+| p       | Trial success probability                                    | 0.1 to 0.9                      |
+| L       | Global rollout time                                          | years                           |
+| D       | Research discoveries per year for diseases                   | discoveries                     |
+| D_aging | Research discoveries per year for aging                      | discoveries                     |
+| E       | Diseases eradicated this year                                | count                           |
+| newF    | New diseases found this year                                 | count                           |
+| rem     | Diseases remaining (research, trials, rollout)               | count                           |
+| b_i     | Burden of disease i                                          | DALYs per year                  |
+| O, H    | Remaining burden of age-independent and age-related diseases | DALYs per year                  |
+| A, B, G | Gompertz–Makeham parameters                                  | per year                        |
+| LE      | Period life expectancy at birth                              | years                           |
+| LE_dis  | Life expectancy with aging untouched                         | years                           |
+| dAg     | Change in years added by aging research                      | years per year                  |
 
 ---
 
@@ -182,14 +182,14 @@ Each disease is always in one of five stages:
 
 **Model assumption,** anchored to a total burden of 2.5 billion DALYs per year, the order of magnitude reported by the [Global Burden of Disease study](https://vizhub.healthdata.org/gbd-results/) ([summary data](https://ourworldindata.org/grapher/total-disease-burden)).
 
-| Type | Known in 2026 | Share of undiscovered | Share of burden | Median difficulty |
-| --- | --- | --- | --- | --- |
-| Infectious | 2,500 | 10% | 25% | 7 |
-| Genetic and rare | 8,000 | 80% | 3% | 9 |
-| Chronic | 3,000 | 0% | 55% | 28 |
-| Neuro and mental | 1,500 | 0% | 12% | 40 |
-| Autoimmune | 700 | 0% | 2% | 22 |
-| Other | 1,300 | 10% | 3% | 12 |
+| Type             | Known in 2026 | Share of undiscovered | Share of burden | Median difficulty |
+| ---------------- | ------------- | --------------------- | --------------- | ----------------- |
+| Infectious       | 2,500         | 10%                   | 25%             | 7                 |
+| Genetic and rare | 8,000         | 80%                   | 3%              | 9                 |
+| Chronic          | 3,000         | 0%                    | 55%             | 28                |
+| Neuro and mental | 1,500         | 0%                    | 12%             | 40                |
+| Autoimmune       | 700           | 0%                    | 2%              | 22                |
+| Other            | 1,300         | 10%                   | 3%              | 12                |
 
 These types contain 24 disease families, each with one platform technology (for example, in-vivo base editing for metabolic disorders). The 33 highest-profile diseases, such as ischemic heart disease, malaria, and Alzheimer's disease, are named and appear in the event log.
 
@@ -323,12 +323,12 @@ Discoveries are split among diseases in research in proportion to a weight. **Mo
 W_i = (b_i + 1)^{\gamma}\cdot k_{type}, \qquad \Delta\text{prog}_i = D_d \cdot \frac{W_i}{\sum_j W_j}\,(0.6 + 0.8u)
 ```
 
-| Research priority | γ | Type multipliers k | Effective discoveries D_d |
-| --- | --- | --- | --- |
-| Biggest killers first (default) | 0.8 / (1 + 0.4P) | all 1 | D |
-| Neglected and rare | 0 | Genetic 4, Autoimmune and Other 2, Chronic and Neuro 0.6, Infectious 1 | D |
-| Platform technology | 0.5 / (1 + P) | all 1 | 0.7D |
-| Aging first | 0.5 / (1 + P) | all 1 | D |
+| Research priority               | γ                | Type multipliers k                                                     | Effective discoveries D_d |
+| ------------------------------- | ---------------- | ---------------------------------------------------------------------- | ------------------------- |
+| Biggest killers first (default) | 0.8 / (1 + 0.4P) | all 1                                                                  | D                         |
+| Neglected and rare              | 0                | Genetic 4, Autoimmune and Other 2, Chronic and Neuro 0.6, Infectious 1 | D                         |
+| Platform technology             | 0.5 / (1 + P)    | all 1                                                                  | 0.7D                      |
+| Aging first                     | 0.5 / (1 + P)    | all 1                                                                  | D                         |
 
 Under the rare priority, genetic diseases also get basket trials: half the trial length and +0.15 success probability.
 
@@ -357,12 +357,12 @@ Fractional amounts accumulate, and whole diseases are drawn from the pool withou
 
 Each event is a yearly [Bernoulli trial](https://en.wikipedia.org/wiki/Bernoulli_trial) with the probability shown. **Model assumptions.**
 
-| Event | Probability per year | Effect |
-| --- | --- | --- |
-| Pandemic | pand / 100 | A new infectious disease with burden (5 + 75u₁u₂) million DALYs; research diverted for 2 years; regulation −0.2 |
-| Safety scare | 0.25(1 − R) · min(1, P) | Up to 40 therapies in rollout return to trials; regulation +0.18 |
-| Platform breakthrough | (spill / 100) · min(0.85, m(0.04 + 0.12P)), m = 3 under the platform priority | Every disease in one family gains 70% (or 90%) of its required progress |
-| Surprise breakthrough | (surprise / 100) · 0.2 | Half the time, a disease is fast-tracked into trials; otherwise AI capability jumps 30% (not during a plateau) |
+| Event                 | Probability per year                                                          | Effect                                                                                                          |
+| --------------------- | ----------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Pandemic              | pand / 100                                                                    | A new infectious disease with burden (5 + 75u₁u₂) million DALYs; research diverted for 2 years; regulation −0.2 |
+| Safety scare          | 0.25(1 − R) · min(1, P)                                                       | Up to 40 therapies in rollout return to trials; regulation +0.18                                                |
+| Platform breakthrough | (spill / 100) · min(0.85, m(0.04 + 0.12P)), m = 3 under the platform priority | Every disease in one family gains 70% (or 90%) of its required progress                                         |
+| Surprise breakthrough | (surprise / 100) · 0.2                                                        | Half the time, a disease is fast-tracked into trials; otherwise AI capability jumps 30% (not during a plateau)  |
 
 ---
 
@@ -451,23 +451,23 @@ That is about a 9× slowdown in aging. Without this floor, the established accid
 
 ### Constants and calibration
 
-| Constant | Value | Source |
-| --- | --- | --- |
-| G₀ | 0.085 | Established: observed human aging speed |
-| A_ext | 0.0006 per year | Established: roughly 4.4 million injury deaths among 8.2 billion people |
-| A_dis | 0.004 | Fitted |
-| B_int | 1.9112359 × 10⁻⁵ | Fitted |
-| d | 0.2781289 | Fitted |
-| G_min | 0.009405 (for a 500-year maximum) | Solved |
-| q₀ | 20 | Model assumption |
+| Constant | Value                             | Source                                                                  |
+| -------- | --------------------------------- | ----------------------------------------------------------------------- |
+| G₀       | 0.085                             | Established: observed human aging speed                                 |
+| A_ext    | 0.0006 per year                   | Established: roughly 4.4 million injury deaths among 8.2 billion people |
+| A_dis    | 0.004                             | Fitted                                                                  |
+| B_int    | 1.9112359 × 10⁻⁵                  | Fitted                                                                  |
+| d        | 0.2781289                         | Fitted                                                                  |
+| G_min    | 0.009405 (for a 500-year maximum) | Solved                                                                  |
+| q₀       | 20                                | Model assumption                                                        |
 
 The fitted constants reproduce three anchors:
 
-| Scenario | A | B | G | Life expectancy |
-| --- | --- | --- | --- | --- |
-| Today, 2026 | A_ext + A_dis | B_int(1 + d) | G₀ | 73.3 |
-| Every disease cured, aging untouched | A_ext | B_int | G₀ | 90 |
-| Every disease cured, aging at its slowest | A_ext | B_int | G_min | 500 |
+| Scenario                                  | A             | B            | G     | Life expectancy |
+| ----------------------------------------- | ------------- | ------------ | ----- | --------------- |
+| Today, 2026                               | A_ext + A_dis | B_int(1 + d) | G₀    | 73.3            |
+| Every disease cured, aging untouched      | A_ext         | B_int        | G₀    | 90              |
+| Every disease cured, aging at its slowest | A_ext         | B_int        | G_min | 500             |
 
 Because the curve is steep, most of the gain comes late. With every disease cured, slowing aging by half gives about 147 years, by 75% about 222, by 90% about 328, by 95% about 395, and by 99% about 474.
 
@@ -540,54 +540,54 @@ The Explore page is a [Monte Carlo](https://en.wikipedia.org/wiki/Monte_Carlo_me
 
 Every parameter is adjustable in Settings and validated with the same ranges by the API. Settings changes apply to the next run.
 
-| Group | Key | Setting | Default | Range |
-| --- | --- | --- | --- | --- |
-| AI progress | g0 | Model improvement rate | 35% per year | 5 to 150 |
-| AI progress | acc | Acceleration | 1% per year | 0 to 20 |
-| AI progress | growth | Growth shape | Exponential | Exponential, Exponential with plateaus |
-| AI progress | ceiling | First plateau | 100× today | 10× to 1,000,000× |
-| AI progress | plen | Typical plateau length | 5 years | 1 to 20 |
-| AI progress | aiBase | AI discoveries in 2026 | 20 per year | 5 to 200 |
-| AI progress | human | Human baseline discoveries | 50 per year | 10 to 200 |
-| Regulation | reg0 | Starting climate | 50 | 0 to 100 |
-| Regulation | vol | Political volatility | 50% | 0 to 100 |
-| Diseases | newBase | New diseases found in 2026 | 200 per year | 0 to 1,000 |
-| Diseases | beta | AI boost to finding diseases | 0.35 | 0 to 1 |
-| Diseases | pool | Undiscovered diseases | 25,000 | 5,000 to 100,000 |
-| Diseases | priority | Research priority | Biggest killers first | 4 options |
-| Diseases | res | Resistance chance | 4% per year | 0 to 20 |
-| Events | spill | Platform breakthroughs | 100% of normal | 0 to 200 |
-| Events | pand | Pandemic chance | 3% per year | 0 to 20 |
-| Events | surprise | Surprise breakthroughs | 100% of normal | 0 to 200 |
-| Aging | aging | AI effort on aging | 10% of AI research | 0 to 50 |
-| Aging | lemax | Maximum life expectancy | 500 years | set in the engine |
-| Aging | q0 | Aging research difficulty | 20 | set in the engine |
-| Ending | endAtCross | Stop at the crossover | on | on or off |
-| Ending | seed | Run seed | 0 (random) | integer ≥ 0 |
+| Group       | Key        | Setting                      | Default               | Range                                  |
+| ----------- | ---------- | ---------------------------- | --------------------- | -------------------------------------- |
+| AI progress | g0         | Model improvement rate       | 35% per year          | 5 to 150                               |
+| AI progress | acc        | Acceleration                 | 1% per year           | 0 to 20                                |
+| AI progress | growth     | Growth shape                 | Exponential           | Exponential, Exponential with plateaus |
+| AI progress | ceiling    | First plateau                | 100× today            | 10× to 1,000,000×                      |
+| AI progress | plen       | Typical plateau length       | 5 years               | 1 to 20                                |
+| AI progress | aiBase     | AI discoveries in 2026       | 20 per year           | 5 to 200                               |
+| AI progress | human      | Human baseline discoveries   | 50 per year           | 10 to 200                              |
+| Regulation  | reg0       | Starting climate             | 50                    | 0 to 100                               |
+| Regulation  | vol        | Political volatility         | 50%                   | 0 to 100                               |
+| Diseases    | newBase    | New diseases found in 2026   | 200 per year          | 0 to 1,000                             |
+| Diseases    | beta       | AI boost to finding diseases | 0.35                  | 0 to 1                                 |
+| Diseases    | pool       | Undiscovered diseases        | 25,000                | 5,000 to 100,000                       |
+| Diseases    | priority   | Research priority            | Biggest killers first | 4 options                              |
+| Diseases    | res        | Resistance chance            | 4% per year           | 0 to 20                                |
+| Events      | spill      | Platform breakthroughs       | 100% of normal        | 0 to 200                               |
+| Events      | pand       | Pandemic chance              | 3% per year           | 0 to 20                                |
+| Events      | surprise   | Surprise breakthroughs       | 100% of normal        | 0 to 200                               |
+| Aging       | aging      | AI effort on aging           | 10% of AI research    | 0 to 50                                |
+| Aging       | lemax      | Maximum life expectancy      | 500 years             | set in the engine                      |
+| Aging       | q0         | Aging research difficulty    | 20                    | set in the engine                      |
+| Ending      | endAtCross | Stop at the crossover        | on                    | on or off                              |
+| Ending      | seed       | Run seed                     | 0 (random)            | integer ≥ 0                            |
 
 ---
 
 ## Established models vs. model assumptions
 
-| Relationship | Status |
-| --- | --- |
-| Gompertz–Makeham mortality law | Established |
-| Life table and survival function for life expectancy | Established |
-| Today's aging speed (mortality doubling every ~8 years) | Established |
-| Injury mortality floor | Established (approximate) |
-| DALYs as the burden measure; 2.5 billion total | Established measure, rounded total |
-| Zipf-like burden and log-normal difficulty | Established distributions, model parameters |
-| Exponential AI growth, acceleration, plateaus | Model assumption |
-| Regulation dynamics and its two-way link with AI | Model assumption |
-| Pipeline compaction, trial length, success, rollout | Model assumption, anchored to today's ~8-year trials and ~10% success |
-| Research allocation weights and priorities | Model assumption |
-| Disease detection power law | Model assumption |
-| Event probabilities and effects | Model assumption |
-| Diseases grouped into A and B | Simplified from established cause elimination |
-| Aging research slows the speed of aging | Model assumption |
-| Aging can only be slowed ~9× (500-year maximum) | Model assumption |
-| Burden multiplier from population aging | Model assumption |
-| Escape velocity measured with period life expectancy | Established concept, model measurement |
+| Relationship                                            | Status                                                                |
+| ------------------------------------------------------- | --------------------------------------------------------------------- |
+| Gompertz–Makeham mortality law                          | Established                                                           |
+| Life table and survival function for life expectancy    | Established                                                           |
+| Today's aging speed (mortality doubling every ~8 years) | Established                                                           |
+| Injury mortality floor                                  | Established (approximate)                                             |
+| DALYs as the burden measure; 2.5 billion total          | Established measure, rounded total                                    |
+| Zipf-like burden and log-normal difficulty              | Established distributions, model parameters                           |
+| Exponential AI growth, acceleration, plateaus           | Model assumption                                                      |
+| Regulation dynamics and its two-way link with AI        | Model assumption                                                      |
+| Pipeline compaction, trial length, success, rollout     | Model assumption, anchored to today's ~8-year trials and ~10% success |
+| Research allocation weights and priorities              | Model assumption                                                      |
+| Disease detection power law                             | Model assumption                                                      |
+| Event probabilities and effects                         | Model assumption                                                      |
+| Diseases grouped into A and B                           | Simplified from established cause elimination                         |
+| Aging research slows the speed of aging                 | Model assumption                                                      |
+| Aging can only be slowed ~9× (500-year maximum)         | Model assumption                                                      |
+| Burden multiplier from population aging                 | Model assumption                                                      |
+| Escape velocity measured with period life expectancy    | Established concept, model measurement                                |
 
 ---
 
@@ -597,16 +597,16 @@ The engine is deterministic, so a fixed seed must always give the same result.
 
 **Golden run** (default settings, seed 12345):
 
-| Check | Expected |
-| --- | --- |
-| Crossover year | 2054 |
-| Escape velocity year | 2033 |
-| Eradicated at crossover | 6,092 |
-| Remaining at crossover | 33,942 |
-| Healthy years gained at crossover | 21,453,310,019 |
-| Life expectancy at crossover | 257.175 years |
-| Pandemics, platform breakthroughs, safety scares | 5, 3, 5 |
-| Full eradication (keep going) | 2080, life expectancy 498.365 years |
+| Check                                            | Expected                            |
+| ------------------------------------------------ | ----------------------------------- |
+| Crossover year                                   | 2054                                |
+| Escape velocity year                             | 2033                                |
+| Eradicated at crossover                          | 6,092                               |
+| Remaining at crossover                           | 33,942                              |
+| Healthy years gained at crossover                | 21,453,310,019                      |
+| Life expectancy at crossover                     | 257.175 years                       |
+| Pandemics, platform breakthroughs, safety scares | 5, 3, 5                             |
+| Full eradication (keep going)                    | 2080, life expectancy 498.365 years |
 
 **Invariant tests** check, for every simulated year, that the two stock-and-flow identities hold, stage counts add up to the total number of diseases, regulation stays between 0 and 1, and trial values stay within their bounds. Across 20 seeds for each growth shape, life expectancy at full eradication lands between 490 and 500 years and never exceeds 500.
 
@@ -615,6 +615,7 @@ The engine is deterministic, so a fixed seed must always give the same result.
 ## References
 
 **Demography and mortality**
+
 - [Gompertz–Makeham law of mortality](https://en.wikipedia.org/wiki/Gompertz%E2%80%93Makeham_law_of_mortality)
 - [Life table](https://en.wikipedia.org/wiki/Life_table)
 - [Survival function](https://en.wikipedia.org/wiki/Survival_function)
@@ -623,6 +624,7 @@ The engine is deterministic, so a fixed seed must always give the same result.
 - [Longevity escape velocity](https://en.wikipedia.org/wiki/Longevity_escape_velocity)
 
 **Public health data**
+
 - [Disability-adjusted life year (DALY)](https://en.wikipedia.org/wiki/Disability-adjusted_life_year)
 - [Global Burden of Disease results tool (IHME)](https://vizhub.healthdata.org/gbd-results/)
 - [Total disease burden (Our World in Data)](https://ourworldindata.org/grapher/total-disease-burden)
@@ -630,6 +632,7 @@ The engine is deterministic, so a fixed seed must always give the same result.
 - [Phases of clinical research](https://en.wikipedia.org/wiki/Phases_of_clinical_research)
 
 **Mathematics and statistics**
+
 - [Exponential growth](https://en.wikipedia.org/wiki/Exponential_growth)
 - [Power law](https://en.wikipedia.org/wiki/Power_law)
 - [Zipf's law](https://en.wikipedia.org/wiki/Zipf%27s_law)
@@ -645,6 +648,7 @@ The engine is deterministic, so a fixed seed must always give the same result.
 - [Percentile](https://en.wikipedia.org/wiki/Percentile)
 
 **Randomness**
+
 - [Pseudorandom number generator](https://en.wikipedia.org/wiki/Pseudorandom_number_generator)
 - [Mulberry32 (original by Tommy Ettinger)](https://gist.github.com/tommyettinger/46a874533244883189143505d203312c)
 - [Collection of JavaScript PRNGs, including Mulberry32 (bryc)](https://github.com/bryc/code/blob/master/jshash/PRNGs.md)

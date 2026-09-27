@@ -6,14 +6,34 @@
 export { RNG, mulberry32 } from './rng.js';
 export { fmtBig, fmtNum } from './format.js';
 export {
-  TYPE_INFO, FAMILIES, NAMED_DISEASES, DISEASE_NAMES,
-  TOTAL_BURDEN, BASELINE_LE, LE_GAIN_CAP, PANDEMIC_RESERVE,
-  START_YEAR, END_YEAR, MAX_EVENTS, TOTAL_FAMILIES, TOTAL_KNOWN,
-  A_EXT, A_DIS, G0, B_INT, D_AGE, lifeExp, solveGmin,
+  TYPE_INFO,
+  FAMILIES,
+  NAMED_DISEASES,
+  DISEASE_NAMES,
+  TOTAL_BURDEN,
+  BASELINE_LE,
+  LE_GAIN_CAP,
+  PANDEMIC_RESERVE,
+  START_YEAR,
+  END_YEAR,
+  MAX_EVENTS,
+  TOTAL_FAMILIES,
+  TOTAL_KNOWN,
+  A_EXT,
+  A_DIS,
+  G0,
+  B_INT,
+  D_AGE,
+  lifeExp,
+  solveGmin,
 } from './catalog.js';
 export type { TypeInfo, FamilyInfo, NamedDiseaseInfo } from './catalog.js';
 export {
-  DEFAULTS, PARAM_RANGES, GROWTH_PRESETS, PRIORITY_LABELS, ENGINE_VERSION,
+  DEFAULTS,
+  PARAM_RANGES,
+  GROWTH_PRESETS,
+  PRIORITY_LABELS,
+  ENGINE_VERSION,
 } from './params.js';
 export type { Params, YearRecord, EventEntry, RunSummary, ParamRange } from './params.js';
 export { createSim } from './init.js';
