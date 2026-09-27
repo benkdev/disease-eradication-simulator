@@ -54,10 +54,10 @@ export function SetupModal({ getParams, onStart }: SetupModalProps) {
     >
       <div className="modal-card" ref={cardRef}>
         <h2 id="setup-title" style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: 8 }}>
-          How does AI grow?
+          Disease Eradication Simulator
         </h2>
         <p id="setup-desc" className="hint" style={{ marginBottom: 16 }}>
-          Pick one, then watch it play out.
+          Pick an AI growth curve, then watch it play out.
         </p>
 
         <div
