@@ -70,7 +70,7 @@ export function ImportModal({ onClose, onReplay, onSimulate }: ImportModalProps)
     const reader = new FileReader();
     reader.onload = (evt) => {
       const content = evt.target?.result as string;
-      if (content) processFileContent(file.name, content);
+      if (typeof content === 'string') processFileContent(file.name, content);
     };
     reader.onerror = () => {
       setError('Error reading file. Please try again.');
@@ -96,7 +96,7 @@ export function ImportModal({ onClose, onReplay, onSimulate }: ImportModalProps)
     const reader = new FileReader();
     reader.onload = (evt) => {
       const content = evt.target?.result as string;
-      if (content) processFileContent(file.name, content);
+      if (typeof content === 'string') processFileContent(file.name, content);
     };
     reader.onerror = () => {
       setError('Error reading file. Please try again.');
@@ -191,6 +191,7 @@ export function ImportModal({ onClose, onReplay, onSimulate }: ImportModalProps)
               type="file"
               accept=".json,.csv"
               onChange={handleFileChange}
+              onClick={(e) => e.stopPropagation()}
               style={{ display: 'none' }}
               data-testid="import-file-input"
             />
@@ -277,7 +278,7 @@ export function ImportModal({ onClose, onReplay, onSimulate }: ImportModalProps)
                 <span>
                   <strong>Final Year:</strong> {finalYear}
                 </span>
-                {payload.summary && (
+                {payload.summary?.lifeExpectancy != null && (
                   <span>
                     <strong>Life Exp:</strong> {payload.summary.lifeExpectancy.toFixed(1)} yrs
                   </span>
