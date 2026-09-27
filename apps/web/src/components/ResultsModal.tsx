@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { fmtBig, fmtNum, type RunSummary, type YearRecord } from '../engine';
+import { fmtBig, fmtNum, type RunSummary, type YearRecord, type Params } from '../engine';
 import { useFocusTrap } from '../hooks/useFocusTrap';
 import { exportToCSV, exportToJSON, exportChartPNG } from '../utils/exportData';
 
@@ -11,6 +11,7 @@ interface ResultsModalProps {
   onNewRun: () => void;
   fullHist?: YearRecord[];
   enabledVars?: boolean[];
+  params?: Params;
 }
 
 export function ResultsModal({
@@ -21,6 +22,7 @@ export function ResultsModal({
   onNewRun,
   fullHist,
   enabledVars,
+  params,
 }: ResultsModalProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const primaryRef = useRef<HTMLButtonElement>(null);
@@ -146,7 +148,9 @@ export function ResultsModal({
                 <button
                   type="button"
                   data-testid="export-csv-btn"
-                  onClick={() => exportToCSV(fullHist, summary.seed)}
+                  onClick={() =>
+                    exportToCSV(fullHist, summary.seed, summary, scenarioLabel, params)
+                  }
                   style={{ flex: 1, minWidth: 90, fontSize: '0.8rem', padding: '6px 10px' }}
                 >
                   Export CSV
@@ -154,7 +158,7 @@ export function ResultsModal({
                 <button
                   type="button"
                   data-testid="export-json-btn"
-                  onClick={() => exportToJSON(summary, fullHist, scenarioLabel)}
+                  onClick={() => exportToJSON(summary, fullHist, scenarioLabel, params)}
                   style={{ flex: 1, minWidth: 90, fontSize: '0.8rem', padding: '6px 10px' }}
                 >
                   Export JSON

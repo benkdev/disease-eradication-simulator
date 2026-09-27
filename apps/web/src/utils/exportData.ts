@@ -1,6 +1,16 @@
-import type { RunSummary, YearRecord } from '../engine';
+import type { RunSummary, YearRecord, Params } from '../engine';
 import { fmtNum } from '../engine';
 import { VARIABLE_DEFS } from '../components/VariableCards';
+
+export interface SimulationExportPayload {
+  format: 'tld-simulation-v1';
+  exportedAt: string;
+  scenario: string;
+  seed: number | string;
+  params?: Params;
+  summary?: RunSummary;
+  history: YearRecord[];
+}
 
 /**
  * Triggers a client-side file download using a temporary Blob URL.
@@ -19,9 +29,25 @@ export function downloadFile(content: string, filename: string, mimeType: string
 }
 
 /**
- * Serializes year records to CSV format and initiates download.
+ * Serializes year records to CSV format with structured metadata comment headers (#).
  */
-export function exportToCSV(hist: YearRecord[], seed: number | string): void {
+export function serializeCSV(
+  hist: YearRecord[],
+  seed: number | string,
+  summary?: RunSummary,
+  scenarioLabel?: string,
+  params?: Params,
+  exportedAt: string = new Date().toISOString()
+): string {
+  const metadataLines = [
+    '# format: tld-simulation-v1',
+    `# exportedAt: ${exportedAt}`,
+    scenarioLabel ? `# scenario: ${scenarioLabel}` : '',
+    `# seed: ${seed}`,
+    summary ? `# summary: ${JSON.stringify(summary)}` : '',
+    params ? `# params: ${JSON.stringify(params)}` : '',
+  ].filter(Boolean);
+
   const headers = [
     'Year',
     'AI_Capability',
@@ -56,22 +82,172 @@ export function exportToCSV(hist: YearRecord[], seed: number | string): void {
     r.D.toFixed(2),
   ]);
 
-  const csvContent = [headers.join(','), ...rows.map((row) => row.join(','))].join('\n');
+  return [...metadataLines, headers.join(','), ...rows.map((row) => row.join(','))].join('\n');
+}
+
+/**
+ * Serializes year records to CSV format and initiates download.
+ */
+export function exportToCSV(
+  hist: YearRecord[],
+  seed: number | string,
+  summary?: RunSummary,
+  scenarioLabel?: string,
+  params?: Params
+): void {
+  const csvContent = serializeCSV(hist, seed, summary, scenarioLabel, params);
   downloadFile(csvContent, `tld-simulation-seed-${seed}.csv`, 'text/csv;charset=utf-8;');
+}
+
+/**
+ * Serializes run summary, parameters, and full history to formatted JSON string.
+ */
+export function serializeJSON(
+  summary: RunSummary,
+  hist: YearRecord[],
+  scenarioLabel: string,
+  params?: Params,
+  exportedAt: string = new Date().toISOString()
+): string {
+  const payload: SimulationExportPayload = {
+    format: 'tld-simulation-v1',
+    exportedAt,
+    scenario: scenarioLabel,
+    seed: summary.seed,
+    params,
+    summary,
+    history: hist,
+  };
+  return JSON.stringify(payload, null, 2);
 }
 
 /**
  * Serializes run summary and full history to formatted JSON and initiates download.
  */
-export function exportToJSON(summary: RunSummary, hist: YearRecord[], scenarioLabel: string): void {
-  const payload = {
-    exportedAt: new Date().toISOString(),
-    scenario: scenarioLabel,
-    summary,
-    history: hist,
-  };
-  const jsonContent = JSON.stringify(payload, null, 2);
+export function exportToJSON(
+  summary: RunSummary,
+  hist: YearRecord[],
+  scenarioLabel: string,
+  params?: Params
+): void {
+  const jsonContent = serializeJSON(summary, hist, scenarioLabel, params);
   downloadFile(jsonContent, `tld-simulation-seed-${summary.seed}.json`, 'application/json');
+}
+
+/**
+ * Parses exported JSON string into structured simulation payload.
+ */
+export function parseExportedJSON(jsonContent: string): SimulationExportPayload {
+  const parsed = JSON.parse(jsonContent);
+  if (!parsed || !Array.isArray(parsed.history)) {
+    throw new Error('Invalid JSON simulation export: missing history array');
+  }
+  return {
+    format: parsed.format || 'tld-simulation-v1',
+    exportedAt: parsed.exportedAt || '',
+    scenario: parsed.scenario || '',
+    seed: parsed.seed ?? parsed.summary?.seed ?? 0,
+    params: parsed.params,
+    summary: parsed.summary,
+    history: parsed.history,
+  };
+}
+
+/**
+ * Parses exported CSV string into structured simulation payload, reading metadata comment headers.
+ */
+export function parseExportedCSV(csvContent: string): SimulationExportPayload {
+  const lines = csvContent
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter((l) => l.length > 0);
+
+  let format = 'tld-simulation-v1' as const;
+  let exportedAt = '';
+  let scenario = '';
+  let seed: number | string = 0;
+  let params: Params | undefined;
+  let summary: RunSummary | undefined;
+  const dataLines: string[] = [];
+
+  for (const line of lines) {
+    if (line.startsWith('#')) {
+      const comment = line.slice(1).trim();
+      const colonIdx = comment.indexOf(':');
+      if (colonIdx !== -1) {
+        const key = comment.slice(0, colonIdx).trim().toLowerCase();
+        const rawVal = comment.slice(colonIdx + 1).trim();
+        if (key === 'format') {
+          format = rawVal as 'tld-simulation-v1';
+        } else if (key === 'exportedat') {
+          exportedAt = rawVal;
+        } else if (key === 'scenario') {
+          scenario = rawVal;
+        } else if (key === 'seed') {
+          const num = Number(rawVal);
+          seed = isNaN(num) ? rawVal : num;
+        } else if (key === 'params') {
+          try {
+            params = JSON.parse(rawVal);
+          } catch {
+            // ignore malformed comment
+          }
+        } else if (key === 'summary') {
+          try {
+            summary = JSON.parse(rawVal);
+          } catch {
+            // ignore malformed comment
+          }
+        }
+      }
+    } else {
+      dataLines.push(line);
+    }
+  }
+
+  if (dataLines.length < 2) {
+    throw new Error('Invalid CSV simulation export: missing header or data rows');
+  }
+
+  const headerCols = dataLines[0].split(',').map((h) => h.trim());
+  const history: YearRecord[] = [];
+
+  for (let i = 1; i < dataLines.length; i++) {
+    const cols = dataLines[i].split(',').map((c) => c.trim());
+    if (cols.length < headerCols.length) continue;
+
+    const row: Record<string, number> = {};
+    headerCols.forEach((colName, cIdx) => {
+      row[colName] = parseFloat(cols[cIdx]);
+    });
+
+    history.push({
+      y: row['Year'] ?? 0,
+      C: row['AI_Capability'] ?? 0,
+      reg: row['Regulation'] ?? 0,
+      LE: row['Life_Expectancy'] ?? 0,
+      dLE: row['Life_Expectancy_Delta'] ?? 0,
+      dAg: row['Aging_Delta'] ?? 0,
+      healthy: row['Healthy_Years_Gained'] ?? 0,
+      rem: row['Remaining_Diseases'] ?? 0,
+      erad: row['Eradicated_This_Year'] ?? 0,
+      eradCum: row['Cumulative_Eradicated'] ?? 0,
+      newF: row['New_Diseases_Found'] ?? 0,
+      T: row['Trial_Length'] ?? 0,
+      p: row['Trial_Success_Rate'] ?? 0,
+      D: row['Discoveries_Per_Year'] ?? 0,
+    });
+  }
+
+  return {
+    format,
+    exportedAt,
+    scenario,
+    seed: seed || summary?.seed || (history[0]?.y ? 0 : 0),
+    params,
+    summary,
+    history,
+  };
 }
 
 export interface ExportChartOptions {

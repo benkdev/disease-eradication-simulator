@@ -163,6 +163,7 @@ export default function App() {
           onNewRun={sim.newRun}
           fullHist={sim.fullHist}
           enabledVars={enabledVars}
+          params={sim.getParams()}
         />
       )}
     </div>

@@ -1,6 +1,15 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { exportToCSV, exportToJSON, exportChartPNG, downloadFile } from '../utils/exportData';
-import type { RunSummary, YearRecord } from '../engine';
+import {
+  exportToCSV,
+  exportToJSON,
+  exportChartPNG,
+  downloadFile,
+  serializeCSV,
+  serializeJSON,
+  parseExportedCSV,
+  parseExportedJSON,
+} from '../utils/exportData';
+import { DEFAULTS, type RunSummary, type YearRecord } from '../engine';
 
 describe('exportData utilities', () => {
   const sampleHist: YearRecord[] = [
@@ -205,5 +214,71 @@ describe('exportData utilities', () => {
     expect(mockExportCanvas.toDataURL).toHaveBeenCalledWith('image/png');
     expect(mockAnchor.download).toBe('tld-simulation-chart.png');
     expect(mockAnchor.click).toHaveBeenCalled();
+  });
+
+  describe('CSV and JSON metadata parity and round-trip parsing', () => {
+    it('serializeCSV embeds metadata comment headers (#) with seed, scenario, summary, and params', () => {
+      const csv = serializeCSV(sampleHist, 42, sampleSummary, 'Exponential AI growth', DEFAULTS);
+      expect(csv).toContain('# format: tld-simulation-v1');
+      expect(csv).toContain('# scenario: Exponential AI growth');
+      expect(csv).toContain('# seed: 42');
+      expect(csv).toContain('# summary: {"outcome":"crossover",');
+      expect(csv).toContain('# params: {"g0":35,');
+      expect(csv).toContain('Year,AI_Capability,Regulation');
+      expect(csv).toContain('2026,1.00,0.500,73.00');
+    });
+
+    it('serializeJSON embeds format, seed, scenario, params, summary, and history', () => {
+      const json = serializeJSON(sampleSummary, sampleHist, 'Exponential AI growth', DEFAULTS);
+      const parsed = JSON.parse(json);
+      expect(parsed.format).toBe('tld-simulation-v1');
+      expect(parsed.scenario).toBe('Exponential AI growth');
+      expect(parsed.seed).toBe(42);
+      expect(parsed.params.g0).toBe(35);
+      expect(parsed.summary.endYear).toBe(2038);
+      expect(parsed.history).toHaveLength(2);
+    });
+
+    it('round-trip parsing of CSV preserves 1:1 parity with JSON payload', () => {
+      const csv = serializeCSV(sampleHist, 42, sampleSummary, 'Exponential AI growth', DEFAULTS);
+      const json = serializeJSON(sampleSummary, sampleHist, 'Exponential AI growth', DEFAULTS);
+
+      const parsedFromCSV = parseExportedCSV(csv);
+      const parsedFromJSON = parseExportedJSON(json);
+
+      expect(parsedFromCSV.format).toBe(parsedFromJSON.format);
+      expect(parsedFromCSV.scenario).toBe(parsedFromJSON.scenario);
+      expect(parsedFromCSV.seed).toBe(parsedFromJSON.seed);
+      expect(parsedFromCSV.summary).toEqual(parsedFromJSON.summary);
+      expect(parsedFromCSV.params).toEqual(parsedFromJSON.params);
+      expect(parsedFromCSV.history).toHaveLength(parsedFromJSON.history.length);
+      expect(parsedFromCSV.history[0].y).toBe(parsedFromJSON.history[0].y);
+      expect(parsedFromCSV.history[0].LE).toBe(parsedFromJSON.history[0].LE);
+      expect(parsedFromCSV.history[1].y).toBe(parsedFromJSON.history[1].y);
+      expect(parsedFromCSV.history[1].LE).toBe(parsedFromJSON.history[1].LE);
+    });
+
+    it('parseExportedCSV parses standard CSV without metadata headers gracefully', () => {
+      const plainCSV = [
+        'Year,AI_Capability,Regulation,Life_Expectancy,Life_Expectancy_Delta,Aging_Delta,Healthy_Years_Gained,Remaining_Diseases,Eradicated_This_Year,Cumulative_Eradicated,New_Diseases_Found,Trial_Length,Trial_Success_Rate,Discoveries_Per_Year',
+        '2026,1.00,0.500,73.00,0.00,0.000,0.00,8000,70,2000,200,10.00,0.100,50.00',
+      ].join('\n');
+
+      const parsed = parseExportedCSV(plainCSV);
+      expect(parsed.history).toHaveLength(1);
+      expect(parsed.history[0].y).toBe(2026);
+      expect(parsed.history[0].C).toBe(1.0);
+      expect(parsed.params).toBeUndefined();
+    });
+
+    it('parseExportedJSON throws on invalid structure missing history', () => {
+      expect(() => parseExportedJSON('{}')).toThrow('missing history array');
+    });
+
+    it('parseExportedCSV throws on invalid CSV missing data rows', () => {
+      expect(() => parseExportedCSV('# just comments\n# nothing else')).toThrow(
+        'missing header or data rows'
+      );
+    });
   });
 });
