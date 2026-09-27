@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { fmtBig, fmtNum, type RunSummary } from '../engine';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 
 interface ResultsModalProps {
   summary: RunSummary;
@@ -10,16 +11,15 @@ interface ResultsModalProps {
 }
 
 export function ResultsModal({ summary, scenarioLabel, onClose, onKeepGoing, onNewRun }: ResultsModalProps) {
+  const cardRef = useRef<HTMLDivElement>(null);
   const primaryRef = useRef<HTMLButtonElement>(null);
+
+  // Accessible focus trap and Escape key listener
+  useFocusTrap(cardRef, true, onClose);
 
   useEffect(() => {
     primaryRef.current?.focus();
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
-  }, [onClose]);
+  }, []);
 
   const endYear = summary.endYear;
   const yearsFromNow = endYear - 2026;
@@ -51,20 +51,32 @@ export function ResultsModal({ summary, scenarioLabel, onClose, onKeepGoing, onN
   ];
 
   return (
-    <div className="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="results-title" data-testid="results-modal">
-      <div className="modal-card">
+    <div
+      className="modal-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="results-title"
+      aria-describedby="results-summary-text"
+      data-testid="results-modal"
+      onClick={e => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div className="modal-card" ref={cardRef}>
         <button
           className="close-btn"
           data-testid="results-close-btn"
           onClick={onClose}
-          aria-label="Close results"
+          aria-label="Close results dialog"
           style={{ position: 'absolute', top: 12, left: 12 }}
         >
           ×
         </button>
 
         <div style={{ paddingTop: 32 }}>
-          <h2 id="results-title" data-testid="results-title" style={{ fontSize: '1.5rem', fontWeight: 700 }}>{title}</h2>
+          <h2 id="results-title" data-testid="results-title" style={{ fontSize: '1.5rem', fontWeight: 700 }}>
+            {title}
+          </h2>
           <div
             data-testid="results-end-year"
             style={{
@@ -78,17 +90,19 @@ export function ResultsModal({ summary, scenarioLabel, onClose, onKeepGoing, onN
           >
             {endYear}
           </div>
-          <p style={{ color: 'var(--muted)', fontSize: '0.85rem', marginBottom: 16 }}>
+          <p id="results-summary-text" style={{ color: 'var(--muted)', fontSize: '0.85rem', marginBottom: 16 }}>
             {summaryText} <em>{scenarioLabel}.</em>
           </p>
 
-          <dl style={{
-            display: 'grid',
-            gridTemplateColumns: 'auto 1fr',
-            gap: '6px 16px',
-            fontSize: '0.85rem',
-            marginBottom: 20,
-          }}>
+          <dl
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'auto 1fr',
+              gap: '6px 16px',
+              fontSize: '0.85rem',
+              marginBottom: 20,
+            }}
+          >
             {rows.map(([label, value]) => (
               <div key={label} style={{ display: 'contents' }}>
                 <dt style={{ color: 'var(--muted)' }}>{label}</dt>

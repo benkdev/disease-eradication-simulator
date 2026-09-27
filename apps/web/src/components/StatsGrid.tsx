@@ -7,6 +7,9 @@ interface StatsGridProps {
 export function StatsGrid({ rec }: StatsGridProps) {
   if (!rec) return null;
 
+  const regPercent = Math.round(rec.reg * 100);
+  const regLabel = rec.reg < 0.33 ? 'Laissez-faire' : rec.reg > 0.66 ? 'Strict' : 'Moderate';
+
   const cells: { value: string; label: string }[] = [
     { value: fmtNum(rec.rem),       label: 'Diseases remaining' },
     { value: fmtNum(rec.eradCum),   label: 'Eradicated' },
@@ -19,7 +22,7 @@ export function StatsGrid({ rec }: StatsGridProps) {
   ];
 
   return (
-    <div style={{ marginBottom: 16 }}>
+    <div role="region" aria-label="Simulation annual metrics" style={{ marginBottom: 16 }}>
       <div
         className="stats-grid panel"
         style={{
@@ -51,15 +54,23 @@ export function StatsGrid({ rec }: StatsGridProps) {
       {/* Regulation meter */}
       <div className="panel" style={{ padding: '10px 12px', marginTop: -1, borderRadius: '0 0 12px 12px', borderTop: '1px solid var(--line)' }}>
         <div style={{ fontSize: '0.75rem', color: 'var(--muted)', marginBottom: 6 }}>
-          Regulatory climate ({Math.round(rec.reg * 100)})
+          Regulatory climate ({regPercent})
         </div>
-        <div style={{
-          height: 8,
-          borderRadius: 4,
-          background: `linear-gradient(to right, var(--trial), var(--res-lo))`,
-          position: 'relative',
-          overflow: 'visible',
-        }}>
+        <div
+          role="progressbar"
+          aria-label="Regulatory climate"
+          aria-valuenow={regPercent}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuetext={`${regPercent} out of 100 (${regLabel})`}
+          style={{
+            height: 8,
+            borderRadius: 4,
+            background: `linear-gradient(to right, var(--trial), var(--res-lo))`,
+            position: 'relative',
+            overflow: 'visible',
+          }}
+        >
           <div style={{
             position: 'absolute',
             left: `${rec.reg * 100}%`,

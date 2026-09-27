@@ -331,7 +331,9 @@ export function MainGraph({
         onPointerUp={() => onCursorChange(null)}
         onPointerLeave={() => onCursorChange(null)}
         onPointerCancel={() => onCursorChange(null)}
-      />
+      >
+        Dynamic multi-line chart displaying AI capability, regulation, diseases remaining, disease eradications, and life expectancy from 2026 onwards.
+      </canvas>
     </div>
   );
 }
