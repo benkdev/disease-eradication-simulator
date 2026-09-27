@@ -82,6 +82,9 @@ describe('Accessibility enhancements', () => {
     expect(html).toContain('aria-describedby="setup-desc"');
     expect(html).toContain('role="radiogroup"');
     expect(html).toContain('role="radio"');
+    expect(html).toContain('data-testid="growth-preset-exp"');
+    expect(html).toContain('data-testid="growth-preset-waves"');
+    expect(html).not.toContain('tabindex="-1"');
   });
 
   it('renders ResultsModal with accessible dialog attributes and labeled close button', () => {

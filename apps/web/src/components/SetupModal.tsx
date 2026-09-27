@@ -25,11 +25,17 @@ export function SetupModal({ getParams, onStart }: SetupModalProps) {
     if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
       e.preventDefault();
       const nextIdx = (PRESET_KEYS.indexOf(selected) + 1) % PRESET_KEYS.length;
-      setSelected(PRESET_KEYS[nextIdx]);
+      const nextKey = PRESET_KEYS[nextIdx];
+      setSelected(nextKey);
+      const btn = cardRef.current?.querySelector<HTMLButtonElement>(`[data-testid="growth-preset-${nextKey}"]`);
+      btn?.focus();
     } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
       e.preventDefault();
       const prevIdx = (PRESET_KEYS.indexOf(selected) - 1 + PRESET_KEYS.length) % PRESET_KEYS.length;
-      setSelected(PRESET_KEYS[prevIdx]);
+      const prevKey = PRESET_KEYS[prevIdx];
+      setSelected(prevKey);
+      const btn = cardRef.current?.querySelector<HTMLButtonElement>(`[data-testid="growth-preset-${prevKey}"]`);
+      btn?.focus();
     }
   };
 
@@ -64,7 +70,7 @@ export function SetupModal({ getParams, onStart }: SetupModalProps) {
                 key={key}
                 role="radio"
                 aria-checked={isSelected}
-                tabIndex={isSelected ? 0 : -1}
+                tabIndex={0}
                 data-testid={`growth-preset-${key}`}
                 onClick={() => setSelected(key)}
                 style={{
@@ -75,6 +81,7 @@ export function SetupModal({ getParams, onStart }: SetupModalProps) {
                   background: 'var(--bg)',
                   minHeight: 'auto',
                   cursor: 'pointer',
+                  outlineOffset: 2,
                 }}
               >
                 <strong style={{ fontSize: '0.92rem' }}>{preset.label}</strong>
