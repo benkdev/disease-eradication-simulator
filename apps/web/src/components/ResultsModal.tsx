@@ -10,6 +10,7 @@ interface ResultsModalProps {
   onKeepGoing: () => void;
   onNewRun: () => void;
   fullHist?: YearRecord[];
+  enabledVars?: boolean[];
 }
 
 export function ResultsModal({
@@ -19,6 +20,7 @@ export function ResultsModal({
   onKeepGoing,
   onNewRun,
   fullHist,
+  enabledVars,
 }: ResultsModalProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const primaryRef = useRef<HTMLButtonElement>(null);
@@ -160,7 +162,14 @@ export function ResultsModal({
                 <button
                   type="button"
                   data-testid="export-png-btn"
-                  onClick={() => exportChartPNG()}
+                  onClick={() =>
+                    exportChartPNG({
+                      scenarioLabel,
+                      summary,
+                      fullHist,
+                      enabledVars,
+                    })
+                  }
                   style={{ flex: 1, minWidth: 90, fontSize: '0.8rem', padding: '6px 10px' }}
                 >
                   Save Image

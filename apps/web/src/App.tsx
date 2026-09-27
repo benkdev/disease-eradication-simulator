@@ -162,6 +162,7 @@ export default function App() {
           onKeepGoing={sim.keepGoing}
           onNewRun={sim.newRun}
           fullHist={sim.fullHist}
+          enabledVars={enabledVars}
         />
       )}
     </div>

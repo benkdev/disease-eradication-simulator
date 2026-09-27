@@ -59,9 +59,11 @@ describe('exportData utilities', () => {
 
   let mockAnchor: { href: string; download: string; click: ReturnType<typeof vi.fn> };
   let mockDocument: {
+    documentElement: { getAttribute: ReturnType<typeof vi.fn> };
     createElement: ReturnType<typeof vi.fn>;
     body: { appendChild: ReturnType<typeof vi.fn>; removeChild: ReturnType<typeof vi.fn> };
     querySelector: ReturnType<typeof vi.fn>;
+    querySelectorAll: ReturnType<typeof vi.fn>;
   };
 
   beforeEach(() => {
@@ -72,6 +74,9 @@ describe('exportData utilities', () => {
     };
 
     mockDocument = {
+      documentElement: {
+        getAttribute: vi.fn().mockReturnValue(null),
+      },
       createElement: vi.fn().mockImplementation((tag: string) => {
         if (tag === 'a') return mockAnchor;
         return {};
@@ -81,11 +86,15 @@ describe('exportData utilities', () => {
         removeChild: vi.fn(),
       },
       querySelector: vi.fn(),
+      querySelectorAll: vi.fn().mockReturnValue([]),
     };
 
     vi.stubGlobal('document', mockDocument);
     vi.stubGlobal('window', {
       document: mockDocument,
+      getComputedStyle: vi.fn().mockReturnValue({
+        getPropertyValue: vi.fn().mockReturnValue(''),
+      }),
     });
     vi.stubGlobal('URL', {
       createObjectURL: vi.fn().mockReturnValue('blob:mock-url'),
@@ -130,6 +139,70 @@ describe('exportData utilities', () => {
     const result = exportChartPNG(mockCanvas);
     expect(result).toBe(true);
     expect(mockCanvas.toDataURL).toHaveBeenCalledWith('image/png');
+    expect(mockAnchor.download).toBe('tld-simulation-chart.png');
+    expect(mockAnchor.click).toHaveBeenCalled();
+  });
+
+  it('exportChartPNG renders title, chart image, and legend items when 2D canvas context is supported', () => {
+    const mockCtx = {
+      measureText: vi.fn().mockReturnValue({ width: 80 }),
+      fillRect: vi.fn(),
+      fillText: vi.fn(),
+      drawImage: vi.fn(),
+      beginPath: vi.fn(),
+      moveTo: vi.fn(),
+      lineTo: vi.fn(),
+      stroke: vi.fn(),
+      setLineDash: vi.fn(),
+    };
+
+    const mockExportCanvas = {
+      width: 0,
+      height: 0,
+      getContext: vi.fn().mockReturnValue(mockCtx),
+      toDataURL: vi.fn().mockReturnValue('data:image/png;base64,composite-mock'),
+    };
+
+    mockDocument.createElement.mockImplementation((tag: string) => {
+      if (tag === 'a') return mockAnchor;
+      if (tag === 'canvas') return mockExportCanvas;
+      return {};
+    });
+
+    const mockSourceCanvas = {
+      width: 1000,
+      height: 500,
+      toDataURL: vi.fn().mockReturnValue('data:image/png;base64,source-mock'),
+    } as unknown as HTMLCanvasElement;
+
+    const result = exportChartPNG({
+      canvasElement: mockSourceCanvas,
+      scenarioLabel: 'Exponential AI growth',
+      summary: sampleSummary,
+      fullHist: sampleHist,
+      enabledVars: [true, true, true, true, true, false, false, false, false, false],
+    });
+
+    expect(result).toBe(true);
+    expect(mockExportCanvas.getContext).toHaveBeenCalledWith('2d');
+    expect(mockCtx.drawImage).toHaveBeenCalledWith(
+      mockSourceCanvas,
+      0,
+      expect.any(Number),
+      1000,
+      500
+    );
+    expect(mockCtx.fillText).toHaveBeenCalledWith(
+      expect.stringContaining('Exponential AI growth'),
+      expect.any(Number),
+      expect.any(Number)
+    );
+    expect(mockCtx.fillText).toHaveBeenCalledWith(
+      expect.stringContaining('Life expectancy'),
+      expect.any(Number),
+      expect.any(Number)
+    );
+    expect(mockExportCanvas.toDataURL).toHaveBeenCalledWith('image/png');
     expect(mockAnchor.download).toBe('tld-simulation-chart.png');
     expect(mockAnchor.click).toHaveBeenCalled();
   });
