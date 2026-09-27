@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "concurrently -n web,api -c cyan,magenta \"pnpm --filter @tld/web dev\" \"pnpm --filter @tld/api dev\"",
+    "dev": "pnpm --filter @tld/web dev",
     "test": "pnpm --filter @tld/engine test",
     "test:engine": "pnpm --filter @tld/engine test",
     "test:web": "pnpm --filter @tld/web test",
