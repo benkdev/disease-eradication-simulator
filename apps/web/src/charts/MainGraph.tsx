@@ -328,7 +328,7 @@ export function MainGraph({
   );
 
   const visibleHist = useMemo(
-    () => fullHist.filter(r => r.y <= currentYear),
+    () => fullHist.filter((r) => r.y <= currentYear),
     [fullHist, currentYear]
   );
   const latestRec = visibleHist.length > 0 ? visibleHist[visibleHist.length - 1] : null;
@@ -345,7 +345,7 @@ export function MainGraph({
     for (const r of visibleHist) {
       if (r.y % 5 === 0) set.add(r.y);
     }
-    return visibleHist.filter(r => set.has(r.y));
+    return visibleHist.filter((r) => set.has(r.y));
   }, [visibleHist, crossYear, levYear, currentYear]);
 
   return (
@@ -380,7 +380,9 @@ export function MainGraph({
             ? `AI capability is ${latestRec.C.toFixed(1)}x, life expectancy is ${latestRec.LE.toFixed(1)} years, and ${latestRec.erad} diseases have been eradicated.`
             : ''}
           {crossYear && currentYear >= crossYear ? ` Crossover was reached in ${crossYear}.` : ''}
-          {levYear && currentYear >= levYear ? ` Longevity escape velocity was reached in ${levYear}.` : ''}
+          {levYear && currentYear >= levYear
+            ? ` Longevity escape velocity was reached in ${levYear}.`
+            : ''}
         </p>
         <table>
           <caption>Simulation milestone and decadal data points</caption>
@@ -394,7 +396,7 @@ export function MainGraph({
             </tr>
           </thead>
           <tbody>
-            {milestones.map(r => (
+            {milestones.map((r) => (
               <tr key={r.y}>
                 <th scope="row">{r.y}</th>
                 <td>{r.C?.toFixed(1) ?? '1.0'}x</td>

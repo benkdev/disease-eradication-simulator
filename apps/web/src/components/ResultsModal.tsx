@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
-import { fmtBig, fmtNum, type RunSummary } from '../engine';
+import { fmtBig, fmtNum, type RunSummary, type YearRecord } from '../engine';
 import { useFocusTrap } from '../hooks/useFocusTrap';
+import { exportToCSV, exportToJSON, exportChartPNG } from '../utils/exportData';
 
 interface ResultsModalProps {
   summary: RunSummary;
@@ -8,6 +9,8 @@ interface ResultsModalProps {
   onClose: () => void;
   onKeepGoing: () => void;
   onNewRun: () => void;
+  fullHist?: YearRecord[];
+  enabledVars?: boolean[];
 }
 
 export function ResultsModal({
@@ -16,6 +19,8 @@ export function ResultsModal({
   onClose,
   onKeepGoing,
   onNewRun,
+  fullHist,
+  enabledVars,
 }: ResultsModalProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const primaryRef = useRef<HTMLButtonElement>(null);
@@ -131,6 +136,47 @@ export function ResultsModal({
               </div>
             ))}
           </dl>
+
+          {fullHist && fullHist.length > 0 && (
+            <div style={{ marginBottom: 16 }}>
+              <div className="hint" style={{ fontSize: '0.8rem', marginBottom: 6 }}>
+                Export Run Data
+              </div>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                <button
+                  type="button"
+                  data-testid="export-csv-btn"
+                  onClick={() => exportToCSV(fullHist, summary.seed)}
+                  style={{ flex: 1, minWidth: 90, fontSize: '0.8rem', padding: '6px 10px' }}
+                >
+                  Export CSV
+                </button>
+                <button
+                  type="button"
+                  data-testid="export-json-btn"
+                  onClick={() => exportToJSON(summary, fullHist, scenarioLabel)}
+                  style={{ flex: 1, minWidth: 90, fontSize: '0.8rem', padding: '6px 10px' }}
+                >
+                  Export JSON
+                </button>
+                <button
+                  type="button"
+                  data-testid="export-png-btn"
+                  onClick={() =>
+                    exportChartPNG({
+                      scenarioLabel,
+                      summary,
+                      fullHist,
+                      enabledVars,
+                    })
+                  }
+                  style={{ flex: 1, minWidth: 90, fontSize: '0.8rem', padding: '6px 10px' }}
+                >
+                  Save Image
+                </button>
+              </div>
+            </div>
+          )}
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {summary.outcome === 'crossover' && (

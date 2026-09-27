@@ -180,8 +180,10 @@ export function RaceChart({
 
         <div className="sr-only" aria-live="polite" data-testid="race-chart-sr-summary">
           <p>
-            {`Year ${currentYear}: ${fullHist.find(r => r.y === currentYear)?.newF ?? 0} new diseases discovered per year, ${fullHist.find(r => r.y === currentYear)?.erad ?? 0} diseases eradicated per year.`}
-            {crossYear && currentYear >= crossYear ? ` Crossover point reached in ${crossYear}.` : ' Crossover not yet reached.'}
+            {`Year ${currentYear}: ${fullHist.find((r) => r.y === currentYear)?.newF ?? 0} new diseases discovered per year, ${fullHist.find((r) => r.y === currentYear)?.erad ?? 0} diseases eradicated per year.`}
+            {crossYear && currentYear >= crossYear
+              ? ` Crossover point reached in ${crossYear}.`
+              : ' Crossover not yet reached.'}
           </p>
         </div>
       </div>

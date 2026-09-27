@@ -144,7 +144,7 @@ describe('Accessibility enhancements', () => {
         levYear={null}
         cursorYear={null}
         onCursorChange={() => {}}
-      />,
+      />
     );
 
     expect(html).toContain('data-testid="main-graph-sr-summary"');
@@ -157,13 +157,13 @@ describe('Accessibility enhancements', () => {
     const state = createSim({ ...DEFAULTS, seed: 12345 });
     step(state);
     const raceHtml = renderToString(
-      <RaceChart fullHist={state.hist} currentYear={2027} crossYear={null} />,
+      <RaceChart fullHist={state.hist} currentYear={2027} crossYear={null} />
     );
     expect(raceHtml).toContain('data-testid="race-chart-sr-summary"');
     expect(raceHtml).toContain('Year 2027');
 
     const longevityHtml = renderToString(
-      <LongevityChart fullHist={state.hist} currentYear={2027} levYear={null} />,
+      <LongevityChart fullHist={state.hist} currentYear={2027} levYear={null} />
     );
     expect(longevityHtml).toContain('data-testid="longevity-chart-sr-summary"');
     expect(longevityHtml).toContain('Year 2027');

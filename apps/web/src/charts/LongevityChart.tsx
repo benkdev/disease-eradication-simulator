@@ -176,8 +176,10 @@ export function LongevityChart({
 
         <div className="sr-only" aria-live="polite" data-testid="longevity-chart-sr-summary">
           <p>
-            {`Year ${currentYear}: ${fullHist.find(r => r.y === currentYear)?.dAg?.toFixed(2) ?? '0.00'} years of healthy life added per year.`}
-            {levYear && currentYear >= levYear ? ` Longevity escape velocity was reached in ${levYear}.` : ' Longevity escape velocity not yet reached.'}
+            {`Year ${currentYear}: ${fullHist.find((r) => r.y === currentYear)?.dAg?.toFixed(2) ?? '0.00'} years of healthy life added per year.`}
+            {levYear && currentYear >= levYear
+              ? ` Longevity escape velocity was reached in ${levYear}.`
+              : ' Longevity escape velocity not yet reached.'}
           </p>
         </div>
       </div>
