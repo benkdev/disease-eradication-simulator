@@ -1,0 +1,22 @@
+name: Gemini AI Code Reviewer
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Gemini Code Review
+        uses: petarzarkov/gemini-code-review-action@98103db192bd3e4ecc886ae82b26577e299cc256 # v1.0.4
+        with:
+          model: gemini-3.8-flash
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
