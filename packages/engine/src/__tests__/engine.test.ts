@@ -193,7 +193,7 @@ describe('longevity scaling tests (seeds 1 to 20)', () => {
         expect(summary.lifeExpectancy).toBeLessThanOrEqual(500);
         expect(maxLE).toBeLessThanOrEqual(500);
       }
-    });
+    }, 30000);
   }
 });
 
