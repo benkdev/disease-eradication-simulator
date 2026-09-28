@@ -10,7 +10,9 @@ test.describe('Journey 1: Primary Simulation Lifecycle (Setup -> Crossover -> Re
     // 1. Visit app and verify setup modal is presented
     await sim.goto();
     await expect(sim.setupModal).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'How does AI grow?' })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: 'Disease Eradication Simulator' })
+    ).toBeVisible();
     await expect(sim.growthExpOption).toBeVisible();
     await expect(sim.growthWavesOption).toBeVisible();
 
