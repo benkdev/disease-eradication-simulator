@@ -5,11 +5,12 @@ import { useFocusTrap } from '../hooks/useFocusTrap';
 interface SetupModalProps {
   getParams: () => Params;
   onStart: (growth: Params['growth']) => void;
+  onOpenImport?: () => void;
 }
 
 const PRESET_KEYS: Array<Params['growth']> = ['exp', 'waves'];
 
-export function SetupModal({ getParams, onStart }: SetupModalProps) {
+export function SetupModal({ getParams, onStart, onOpenImport }: SetupModalProps) {
   const params = getParams();
   const [selected, setSelected] = useState<Params['growth']>(params.growth);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -107,6 +108,26 @@ export function SetupModal({ getParams, onStart }: SetupModalProps) {
           >
             Start run
           </button>
+          {onOpenImport && (
+            <div style={{ marginTop: 12, textAlign: 'center' }}>
+              <button
+                type="button"
+                data-testid="open-import-from-setup-btn"
+                onClick={onOpenImport}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  color: 'var(--accent)',
+                  fontSize: '0.85rem',
+                  cursor: 'pointer',
+                  textDecoration: 'underline',
+                  padding: '4px 8px',
+                }}
+              >
+                Or import a previous run (.json / .csv)
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
