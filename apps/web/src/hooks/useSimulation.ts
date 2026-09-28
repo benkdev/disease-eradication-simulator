@@ -341,7 +341,7 @@ export function useSimulation(): SimController {
           .then((res) => (res.ok ? res.json() : null))
           .then((data) => {
             if (data && data.params) {
-              paramsRef.current = { ...data.params };
+              paramsRef.current = { ...DEFAULTS, ...data.params };
               if (data.seed !== undefined) paramsRef.current.seed = data.seed;
               paramsRef.current.endAtCross = true;
               setSpeed(10);

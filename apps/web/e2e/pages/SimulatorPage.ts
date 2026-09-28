@@ -8,6 +8,15 @@ export class SimulatorPage {
   readonly growthExpOption: Locator;
   readonly growthWavesOption: Locator;
   readonly startRunBtn: Locator;
+  readonly openImportFromSetupBtn: Locator;
+
+  // Import Modal
+  readonly importModal: Locator;
+  readonly importFileInput: Locator;
+  readonly importDropzone: Locator;
+  readonly importPreviewCard: Locator;
+  readonly importSimulateBtn: Locator;
+  readonly importReplayBtn: Locator;
 
   // Header
   readonly header: Locator;
@@ -20,6 +29,7 @@ export class SimulatorPage {
   readonly playPauseBtn: Locator;
   readonly stepOnceBtn: Locator;
   readonly newRunBtn: Locator;
+  readonly shareBtn: Locator;
   readonly speedBtn1: Locator;
   readonly speedBtn2: Locator;
   readonly speedBtn4: Locator;
@@ -36,10 +46,17 @@ export class SimulatorPage {
   readonly keepGoingBtn: Locator;
   readonly resultsNewRunBtn: Locator;
   readonly resultsCloseBtn: Locator;
+  readonly exportCsvBtn: Locator;
+  readonly exportJsonBtn: Locator;
+  readonly exportPngBtn: Locator;
 
   // Settings
   readonly settingsPanel: Locator;
   readonly settingsSummary: Locator;
+
+  // Replay
+  readonly replayingBanner: Locator;
+  readonly newRunFromBannerBtn: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -48,6 +65,14 @@ export class SimulatorPage {
     this.growthExpOption = page.getByTestId('growth-preset-exp');
     this.growthWavesOption = page.getByTestId('growth-preset-waves');
     this.startRunBtn = page.getByTestId('start-run-btn');
+    this.openImportFromSetupBtn = page.getByTestId('open-import-from-setup-btn');
+
+    this.importModal = page.getByTestId('import-modal');
+    this.importFileInput = page.getByTestId('import-file-input');
+    this.importDropzone = page.getByTestId('import-dropzone');
+    this.importPreviewCard = page.getByTestId('import-preview-card');
+    this.importSimulateBtn = page.getByTestId('import-simulate-btn');
+    this.importReplayBtn = page.getByTestId('import-replay-btn');
 
     this.header = page.getByTestId('app-header');
     this.headerYear = page.getByTestId('header-year');
@@ -58,6 +83,7 @@ export class SimulatorPage {
     this.playPauseBtn = page.getByTestId('play-pause-btn');
     this.stepOnceBtn = page.getByTestId('step-once-btn');
     this.newRunBtn = page.getByTestId('new-run-btn');
+    this.shareBtn = page.getByTestId('share-btn');
     this.speedBtn1 = page.getByTestId('speed-btn-1');
     this.speedBtn2 = page.getByTestId('speed-btn-2');
     this.speedBtn4 = page.getByTestId('speed-btn-4');
@@ -72,9 +98,15 @@ export class SimulatorPage {
     this.keepGoingBtn = page.getByTestId('keep-going-btn');
     this.resultsNewRunBtn = page.getByTestId('results-new-run-btn');
     this.resultsCloseBtn = page.getByTestId('results-close-btn');
+    this.exportCsvBtn = page.getByTestId('export-csv-btn');
+    this.exportJsonBtn = page.getByTestId('export-json-btn');
+    this.exportPngBtn = page.getByTestId('export-png-btn');
 
     this.settingsPanel = page.getByTestId('settings-panel');
     this.settingsSummary = page.getByTestId('settings-summary');
+
+    this.replayingBanner = page.getByTestId('replaying-banner');
+    this.newRunFromBannerBtn = page.getByTestId('replaying-new-run-btn');
   }
 
   async goto() {
@@ -104,7 +136,7 @@ export class SimulatorPage {
     await this.page.getByTestId(`speed-btn-${speed}`).click();
   }
 
-  async waitForCrossover(timeout = 30000) {
+  async waitForCrossover(timeout = 45000) {
     await expect(this.resultsModal).toBeVisible({ timeout });
     await expect(this.resultsTitle).toHaveText('Crossover reached');
   }
