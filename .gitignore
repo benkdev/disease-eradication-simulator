@@ -12,6 +12,7 @@ test-results/
 playwright-report/
 allure-results/
 allure-report/
+stress-results.json
 
 # Environment variables & secrets
 .env

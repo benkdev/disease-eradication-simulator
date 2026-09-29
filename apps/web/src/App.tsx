@@ -63,6 +63,7 @@ export default function App() {
         <div
           role="status"
           aria-live="polite"
+          data-testid="replaying-banner"
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -77,6 +78,7 @@ export default function App() {
         >
           <span>Replaying a saved or shared run</span>
           <button
+            data-testid="replaying-new-run-btn"
             onClick={sim.newRun}
             style={{ fontSize: '0.8rem', padding: '4px 12px', minHeight: 30 }}
           >
