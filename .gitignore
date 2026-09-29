@@ -13,6 +13,9 @@ playwright-report/
 allure-results/
 allure-report/
 stress-results.json
+.terraform/
+*.tfstate
+*.tfstate.*
 
 # Environment variables & secrets
 .env
