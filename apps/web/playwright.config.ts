@@ -10,10 +10,7 @@ export default defineConfig({
   workers: 2,
   forbidOnly: !!process.env.CI,
   retries: 0,
-  reporter: [
-    ['list'],
-    ['allure-playwright', { outputFolder: 'allure-results' }],
-  ],
+  reporter: [['list'], ['allure-playwright', { outputFolder: 'allure-results' }]],
   use: {
     baseURL: 'http://localhost:5190',
     trace: 'retain-on-failure',
