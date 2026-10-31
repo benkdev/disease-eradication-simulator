@@ -479,13 +479,15 @@ LE_{dis} = LE(A, B, G_0), \qquad agingGain = LE - LE_{dis}, \qquad dAg_t = aging
 
 LE_dis is what life expectancy would be with only disease cures and no change to aging.
 
+> **Note:** Longevity escape velocity wasn't able to be modeled because of insufficient empirical data, so it is just a fun metric here.
+
 ---
 
 ## 10. Milestones and end conditions
 
 Milestones use a 3-year [moving average](https://en.wikipedia.org/wiki/Moving_average) to smooth out single-year noise.
 
-- **[Longevity escape velocity](https://en.wikipedia.org/wiki/Longevity_escape_velocity):** the first year the 3-year average of dAg is at least 1, meaning aging research adds more than a year of life per year. The run continues.
+- **[Longevity escape velocity](https://en.wikipedia.org/wiki/Longevity_escape_velocity):** the first year the 3-year average of dAg is at least 1, meaning aging research adds more than a year of life per year. The run continues. *(Note: Longevity escape velocity could not be rigorously modeled due to insufficient data, so it is included purely as a fun, exploratory metric.)*
 - **Crossover:** the first year the 3-year average of eradications exceeds the 3-year average of new diseases found (and is above 0). The run ends here by default.
 - **Full eradication:** no diseases remain in research, trials, or rollout, and the undiscovered pool is empty.
 - **Time limit:** 2300.
